@@ -1,18 +1,18 @@
 import Potion from '@/components/Potion'
 import { useState } from 'react'
 
-export default function Market() {
-  const [isBuyButtonEnabled, setIsBuyButtonEnabled] = useState(false)
+export default function Simulator() {
+  const [isSimulationButtonEnabled, setIsSimulationButtonEnabled] = useState(false)
   const [displayResultingDamage, setDisplayResultingDamage] = useState(false)
 
   const onQuantitySelection = (quantity: number) => {
     const isQuantityValid = quantity !== 0
-    setIsBuyButtonEnabled(isQuantityValid)
+    setIsSimulationButtonEnabled(isQuantityValid)
   } // TODO: wrap in useCallback?
 
   return (
     <main className='p-8'>
-      <h1 className="text-6xl font-mono text-center text-gray-800">Market</h1>
+      <h1 className="text-6xl font-mono text-center text-gray-800">Attack simulator</h1>
 
       <div className='flex flex-col gap-6 items-center m-8'>
         <div className='flex gap-6 justify-center'>
@@ -23,8 +23,8 @@ export default function Market() {
           <Potion name="gray" onQuantitySelection={onQuantitySelection} />
         </div>
 
-        <Button enabled={isBuyButtonEnabled} onClick={setDisplayResultingDamage}>
-          Buy
+        <Button enabled={isSimulationButtonEnabled} onClick={setDisplayResultingDamage}>
+          Simulate
         </Button>
       </div>
 

@@ -1,3 +1,3 @@
-import Market from './market'
+import Simulator from './simulator'
 
-export default Market
+export default Simulator

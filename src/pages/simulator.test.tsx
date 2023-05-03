@@ -1,17 +1,17 @@
 import { render, screen, waitFor } from '@testing-library/react'
-import Home from './index'
+import Simulator from './index'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-describe('Market', () => {
+describe('Simulator', () => {
     function renderPage() {
-        render(<Home />)
+        render(<Simulator />)
     }
 
     it('renders a page heading', () => {
         renderPage()
 
-        const heading = screen.getByRole('heading', { name: /Market/i })
+        const heading = screen.getByRole('heading', { name: /Simulator/i })
 
         expect(heading).toBeInTheDocument()
     })
@@ -39,23 +39,23 @@ describe('Market', () => {
         expect(grayPotion).toBeInTheDocument()
     })
 
-    it('renders a buy button', () => {
+    it('renders a submit button', () => {
         renderPage()
 
-        const buyButton = screen.getByRole('button', { name: /Buy/i })
+        const submitButton = screen.getByRole('button', { name: /Simulate/i })
 
-        expect(buyButton).toBeInTheDocument()
+        expect(submitButton).toBeInTheDocument()
     })
 
-    it('disables the buy button by default because no quantity is selected', () => {
+    it('disables the submit button by default because no quantity is selected', () => {
         renderPage()
 
-        const buyButton = screen.getByRole('button', { name: /Buy/i })
+        const submitButton = screen.getByRole('button', { name: /Simulate/i })
 
-        expect(buyButton).toBeDisabled()
+        expect(submitButton).toBeDisabled()
     })
 
-    it('enables the buy button when a quantity is selected', async () => {
+    it('enables the submit button when a quantity is selected', async () => {
         renderPage()
         const redPotionQuantiry = screen.getAllByRole('spinbutton', { name: /Quantity/i })[0]
 
@@ -65,12 +65,12 @@ describe('Market', () => {
             expect(redPotionQuantiry).toHaveValue(1)
         })
 
-        const buyButton = screen.getByRole('button', { name: /Buy/i })
+        const submitButton = screen.getByRole('button', { name: /Simulate/i })
 
-        expect(buyButton).toBeEnabled()
+        expect(submitButton).toBeEnabled()
     })
 
-    it('calculates the resulting damage when the buy button is pressed', async () => {
+    it('calculates the resulting damage when the submit button is pressed', async () => {
         renderPage()
 
         const resultingDamage = screen.queryByRole('heading', { name: /Resulting Damage/i })
@@ -84,9 +84,9 @@ describe('Market', () => {
             expect(quantitySelector).toHaveValue(1)
         })
 
-        const buyButton = screen.getByRole('button', { name: /Buy/i })
+        const submitButton = screen.getByRole('button', { name: /Simulate/i })
 
-        userEvent.click(buyButton)
+        userEvent.click(submitButton)
 
         const resultingDamage2 = await screen.findByRole('heading', { name: /Resulting Damage/i })
         expect(resultingDamage2).toBeInTheDocument()
