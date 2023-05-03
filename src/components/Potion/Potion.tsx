@@ -29,6 +29,7 @@ function Potion({ name, onQuantitySelection }: Props) {
                 role="spinbutton"
                 aria-label='Quantity'
                 className='text-center w-16'
+                min={0}
                 value={quantity}
                 onChange={(event) => {
                     const target = event.target as HTMLInputElement

@@ -43,4 +43,40 @@ describe('Potion', () => {
 
         expect(onQuantitySelection).toHaveBeenCalledWith(1)
     })
+
+    it('does not allow negative quantities', async () => {
+        renderPotion()
+
+        const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
+
+        userEvent.type(quantitySelector, '-1')
+
+        await waitFor(() => {
+            expect(quantitySelector).toHaveValue(0)
+        })
+
+        userEvent.clear(quantitySelector)
+
+        await waitFor(() => {
+            expect(quantitySelector).toHaveValue(0)
+        })
+    })
+
+    it('does not allow non-numeric quantities', async () => {
+        renderPotion()
+
+        const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
+
+        userEvent.type(quantitySelector, 'a')
+
+        await waitFor(() => {
+            expect(quantitySelector).toHaveValue(0)
+        })
+
+        userEvent.clear(quantitySelector)
+
+        await waitFor(() => {
+            expect(quantitySelector).toHaveValue(0)
+        })
+    })
 })
