@@ -11,17 +11,21 @@ export default function Market() {
   } // TODO: wrap in useCallback?
 
   return (
-    <main>
-      <h1>Market</h1>
+    <main className='p-8'>
+      <h1 className="text-6xl font-mono text-center text-gray-800">Market</h1>
 
-      <div>
-        <Potion onQuantitySelection={onQuantitySelection} />
+      <div className='m-8'>
+        <div>
+          <Potion onQuantitySelection={onQuantitySelection} />
+        </div>
+
+        <Button enabled={isBuyButtonEnabled} onClick={setDisplayResultingDamage}>
+          Buy
+        </Button>
       </div>
 
-      <button type="button" disabled={!isBuyButtonEnabled} onClick={() => setDisplayResultingDamage(true)}>Buy</button>
-
       {
-        displayResultingDamage && <div>
+        displayResultingDamage && <div className='m-8'>
           <h2>Resulting Damage</h2>
           <div>
             <div>Attack 1: using 1 potion deals 3% damage.</div>
@@ -30,4 +34,18 @@ export default function Market() {
       }
     </main>
   )
+}
+
+type ButtonProps = {
+  children: React.ReactNode
+  enabled: boolean
+  onClick: (enabled: boolean) => void
+}
+
+function Button({ children, enabled, onClick }: ButtonProps) {
+  return <button type="button"
+    disabled={!enabled}
+    onClick={() => onClick(true)}
+    className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded enabled:cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed'
+  >{children}</button>
 }
