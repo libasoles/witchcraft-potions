@@ -3,8 +3,8 @@ import Home from './index'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
-describe('Home', () => {
-    it('renders a heading', () => {
+describe('Market', () => {
+    it('renders a page heading', () => {
         render(<Home />)
 
         const heading = screen.getByRole('heading', { name: /Market/i })
@@ -12,29 +12,30 @@ describe('Home', () => {
         expect(heading).toBeInTheDocument()
     })
 
-    it('renders a potion', () => {
+    it('renders a potion with 0 quantity by default', () => {
         render(<Home />)
-        const potion = screen.getByRole('img', { name: /Red Potion/i })
-        expect(potion).toBeInTheDocument()
-    })
 
-    it('renders a quantity selector with 0 amount by default', () => {
-        render(<Home />)
+        const potion = screen.getByRole('img', { name: /Red Potion/i })
         const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
+
+        expect(potion).toBeInTheDocument()
         expect(quantitySelector).toBeInTheDocument()
         expect(quantitySelector).toHaveValue(0)
-
     })
 
     it('renders a buy button', () => {
         render(<Home />)
+
         const buyButton = screen.getByRole('button', { name: /Buy/i })
+
         expect(buyButton).toBeInTheDocument()
     })
 
     it('disables the buy button by default because no quantity is selected', () => {
         render(<Home />)
+
         const buyButton = screen.getByRole('button', { name: /Buy/i })
+
         expect(buyButton).toBeDisabled()
     })
 
