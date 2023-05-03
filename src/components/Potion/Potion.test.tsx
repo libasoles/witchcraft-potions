@@ -6,22 +6,32 @@ import Potion from './index'
 const noAction = jest.fn()
 
 describe('Potion', () => {
-    it('renders a potion', () => {
-        render(<Potion onQuantitySelection={noAction} />)
-        const potion = screen.getByRole('img', { name: /Red Potion/i })
-        expect(potion).toBeInTheDocument()
+    function renderPotion() {
+        render(<Potion name="yellow" onQuantitySelection={noAction} />)
+    }
+
+    it('renders a potion with the provided name', () => {
+        renderPotion()
+
+        const name = screen.getByText(/Yellow Potion/i)
+        const image = screen.getByRole('img', { name: /Yellow Potion/i })
+
+        expect(name).toBeInTheDocument()
+        expect(image).toBeInTheDocument()
     })
 
     it('renders a quantity selector with 0 amount by default', () => {
-        render(<Potion onQuantitySelection={noAction} />)
+        renderPotion()
+
         const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
+
         expect(quantitySelector).toBeInTheDocument()
         expect(quantitySelector).toHaveValue(0)
     })
 
     it('calls onQuantitySelection with the selected quantity', async () => {
         const onQuantitySelection = jest.fn()
-        render(<Potion onQuantitySelection={onQuantitySelection} />)
+        render(<Potion name="yellow" onQuantitySelection={onQuantitySelection} />)
 
         const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
 

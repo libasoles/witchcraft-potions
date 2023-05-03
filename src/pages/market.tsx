@@ -14,9 +14,13 @@ export default function Market() {
     <main className='p-8'>
       <h1 className="text-6xl font-mono text-center text-gray-800">Market</h1>
 
-      <div className='m-8'>
-        <div>
-          <Potion onQuantitySelection={onQuantitySelection} />
+      <div className='flex flex-col gap-6 items-center m-8'>
+        <div className='flex gap-6 justify-center'>
+          <Potion name="red" onQuantitySelection={onQuantitySelection} />
+          <Potion name="blue" onQuantitySelection={onQuantitySelection} />
+          <Potion name="green" onQuantitySelection={onQuantitySelection} />
+          <Potion name="yellow" onQuantitySelection={onQuantitySelection} />
+          <Potion name="gray" onQuantitySelection={onQuantitySelection} />
         </div>
 
         <Button enabled={isBuyButtonEnabled} onClick={setDisplayResultingDamage}>
@@ -46,6 +50,8 @@ function Button({ children, enabled, onClick }: ButtonProps) {
   return <button type="button"
     disabled={!enabled}
     onClick={() => onClick(true)}
-    className='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded enabled:cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed'
+    className='bg-green-500 hover:bg-green-700 
+    text-white font-bold py-2 px-4 rounded w-fit
+    enabled:cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed'
   >{children}</button>
 }

@@ -4,27 +4,43 @@ import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 
 describe('Market', () => {
-    it('renders a page heading', () => {
+    function renderPage() {
         render(<Home />)
+    }
+
+    it('renders a page heading', () => {
+        renderPage()
 
         const heading = screen.getByRole('heading', { name: /Market/i })
 
         expect(heading).toBeInTheDocument()
     })
 
-    it('renders a potion with 0 quantity by default', () => {
-        render(<Home />)
+    it('renders five different potions with 0 quantity by default', () => {
+        renderPage()
 
-        const potion = screen.getByRole('img', { name: /Red Potion/i })
-        const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
+        const quantitySelector = screen.getAllByRole('spinbutton', { name: /Quantity/i })
 
-        expect(potion).toBeInTheDocument()
-        expect(quantitySelector).toBeInTheDocument()
-        expect(quantitySelector).toHaveValue(0)
+        expect(quantitySelector).toHaveLength(5)
+        quantitySelector.forEach((quantity) => {
+            expect(quantity).toHaveValue(0)
+        })
+
+        const redPotion = screen.getByRole('img', { name: /Red Potion/i })
+        const bluePotion = screen.getByRole('img', { name: /Blue Potion/i })
+        const greenPotion = screen.getByRole('img', { name: /Green Potion/i })
+        const yellowPotion = screen.getByRole('img', { name: /Yellow Potion/i })
+        const grayPotion = screen.getByRole('img', { name: /Gray Potion/i })
+
+        expect(redPotion).toBeInTheDocument()
+        expect(bluePotion).toBeInTheDocument()
+        expect(greenPotion).toBeInTheDocument()
+        expect(yellowPotion).toBeInTheDocument()
+        expect(grayPotion).toBeInTheDocument()
     })
 
     it('renders a buy button', () => {
-        render(<Home />)
+        renderPage()
 
         const buyButton = screen.getByRole('button', { name: /Buy/i })
 
@@ -32,7 +48,7 @@ describe('Market', () => {
     })
 
     it('disables the buy button by default because no quantity is selected', () => {
-        render(<Home />)
+        renderPage()
 
         const buyButton = screen.getByRole('button', { name: /Buy/i })
 
@@ -40,13 +56,13 @@ describe('Market', () => {
     })
 
     it('enables the buy button when a quantity is selected', async () => {
-        render(<Home />)
-        const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
+        renderPage()
+        const redPotionQuantiry = screen.getAllByRole('spinbutton', { name: /Quantity/i })[0]
 
-        userEvent.type(quantitySelector, '1')
+        userEvent.type(redPotionQuantiry, '1')
 
         await waitFor(() => {
-            expect(quantitySelector).toHaveValue(1)
+            expect(redPotionQuantiry).toHaveValue(1)
         })
 
         const buyButton = screen.getByRole('button', { name: /Buy/i })
@@ -55,12 +71,12 @@ describe('Market', () => {
     })
 
     it('calculates the resulting damage when the buy button is pressed', async () => {
-        render(<Home />)
+        renderPage()
 
         const resultingDamage = screen.queryByRole('heading', { name: /Resulting Damage/i })
         expect(resultingDamage).not.toBeInTheDocument()
 
-        const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
+        const quantitySelector = screen.getAllByRole('spinbutton', { name: /Quantity/i })[0]
 
         userEvent.type(quantitySelector, '1')
 
