@@ -1,3 +1,5 @@
+import { damagePercentByPotionQuantity } from "./config";
+
 export type PotionType = "red" | "blue" | "green" | "yellow" | "gray";
 
 export type Potion = {
@@ -7,3 +9,5 @@ export type Potion = {
 };
 
 export type Potions = Potion[];
+
+export type AmountOfPotions = keyof typeof damagePercentByPotionQuantity;

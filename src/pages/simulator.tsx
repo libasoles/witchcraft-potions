@@ -1,7 +1,7 @@
 import PotionQuantifier from '@/components/Potion'
 import { useState } from 'react'
 import type { Potions } from '@/types'
-import { potions as PotionList } from '@/potions'
+import { potions as PotionList } from '@/config'
 import DamageReport from '@/components/DamageReport'
 
 type Props = {

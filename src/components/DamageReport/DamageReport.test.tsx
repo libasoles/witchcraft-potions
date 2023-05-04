@@ -12,7 +12,7 @@ describe('Damage Report', () => {
     it('renders a message when there is no possible attacks', () => {
         renderPage()
 
-        const message = screen.getByText(/No possible attacks./i)
+        const message = screen.getByText(/No possible attacks. Select at least one potion./i)
 
         expect(message).toBeInTheDocument()
     })
