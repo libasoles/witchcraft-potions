@@ -1,23 +1,26 @@
 import { render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
-import Potion from './index'
+import PotionQuantifier from './index'
+import { Potion } from '@/types'
 
 const noAction = jest.fn()
 
+export const potionMock: Potion = { id: "purple", name: "Purple Potion", image: "x.png" };
+
 describe('Potion', () => {
     function renderPotion() {
-        render(<Potion name="yellow" onQuantitySelection={noAction} />)
+        render(<PotionQuantifier potion={potionMock} onQuantitySelection={noAction} />)
     }
 
-    it('renders a potion with the provided name', () => {
+    it('renders a potion with the provided name and image', () => {
         renderPotion()
 
-        const name = screen.getByText(/Yellow Potion/i)
-        const image = screen.getByRole('img', { name: /Yellow Potion/i })
+        const name = screen.getByText(/Purple Potion/i)
+        const image = screen.getByRole('img', { name: /Purple Potion/i })
 
         expect(name).toBeInTheDocument()
-        expect(image).toBeInTheDocument()
+        expect(image).toBeInTheDocument() // TODO: actually assert that the image was rendered
     })
 
     it('renders a quantity selector with 0 amount by default', () => {
@@ -31,7 +34,7 @@ describe('Potion', () => {
 
     it('calls onQuantitySelection with the selected quantity', async () => {
         const onQuantitySelection = jest.fn()
-        render(<Potion name="yellow" onQuantitySelection={onQuantitySelection} />)
+        render(<PotionQuantifier potion={potionMock} onQuantitySelection={onQuantitySelection} />)
 
         const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
 

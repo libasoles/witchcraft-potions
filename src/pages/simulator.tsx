@@ -1,7 +1,13 @@
-import Potion from '@/components/Potion'
+import PotionQuantifier from '@/components/Potion'
 import { useState } from 'react'
+import type { Potion } from '@/types'
+import { potions as PotionList } from '@/potions'
 
-export default function Simulator() {
+type Props = {
+  potions: Potion[]
+}
+
+export default function Simulator({ potions = PotionList }: Props) {
   const [isSimulationButtonEnabled, setIsSimulationButtonEnabled] = useState(false)
   const [displayResultingDamage, setDisplayResultingDamage] = useState(false)
 
@@ -16,11 +22,7 @@ export default function Simulator() {
 
       <div className='flex flex-col gap-6 items-center m-8'>
         <div className='flex gap-6 justify-center'>
-          <Potion name="red" onQuantitySelection={onQuantitySelection} />
-          <Potion name="blue" onQuantitySelection={onQuantitySelection} />
-          <Potion name="green" onQuantitySelection={onQuantitySelection} />
-          <Potion name="yellow" onQuantitySelection={onQuantitySelection} />
-          <Potion name="gray" onQuantitySelection={onQuantitySelection} />
+          {potions.map((potion) => <PotionQuantifier key={potion.id} potion={potion} onQuantitySelection={onQuantitySelection} />)}
         </div>
 
         <Button enabled={isSimulationButtonEnabled} onClick={setDisplayResultingDamage}>
@@ -31,8 +33,9 @@ export default function Simulator() {
       {
         displayResultingDamage && <div className='m-8'>
           <h2>Resulting Damage</h2>
-          <div>
+          <div data-testid='best-attacks'>
             <div>Attack 1: using 1 potion deals 3% damage.</div>
+            <div>Attack 2: using 2 different potions deals 5% damage.</div>
           </div>
         </div>
       }

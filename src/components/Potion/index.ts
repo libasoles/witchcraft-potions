@@ -1,3 +1,3 @@
-import Potion from "./Potion";
+import PotionQuantifier from "./Potion";
 
-export default Potion;
+export default PotionQuantifier;

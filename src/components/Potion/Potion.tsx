@@ -1,24 +1,24 @@
+import { SyntheticEvent, useState } from 'react'
 import Image from 'next/image'
-import { useState } from 'react'
-
-const potions = {
-    red: { name: 'Red Potion', image: 'redPotion.png' },
-    blue: { name: 'Blue Potion', image: 'bluePotion.png' },
-    green: { name: 'Green Potion', image: 'greenPotion.png' },
-    yellow: { name: 'Yellow Potion', image: 'yellowPotion.png' },
-    gray: { name: 'Gray Potion', image: 'grayPotion.png' },
-}
-
-type PotionType = keyof typeof potions
+import { Potion as PotionQuantifier } from '@/types';
 
 type Props = {
-    name: PotionType;
+    potion: PotionQuantifier;
     onQuantitySelection: (quantity: number) => void
 }
 
-function Potion({ name, onQuantitySelection }: Props) {
-    const potion = potions[name]
-    const [quantity, setQuantity] = useState(0)
+const defaultAmount = 0
+
+function PotionQuantifier({ potion, onQuantitySelection }: Props) {
+    const [quantity, setQuantity] = useState(defaultAmount)
+
+    // TODO: use callback?
+    const onChange = (event: SyntheticEvent) => {
+        const target = event.target as HTMLInputElement
+        const newQuantity = target.value ? parseInt(target.value) : defaultAmount
+        setQuantity(newQuantity)
+        onQuantitySelection(newQuantity)
+    }
 
     return (
         <div className='flex flex-col w-32 p-4 box-content items-center gap-2'>
@@ -31,14 +31,9 @@ function Potion({ name, onQuantitySelection }: Props) {
                 className='text-center w-16'
                 min={0}
                 value={quantity}
-                onChange={(event) => {
-                    const target = event.target as HTMLInputElement
-                    const newQuantity = target.value ? parseInt(target.value) : 0
-                    setQuantity(newQuantity)
-                    onQuantitySelection(newQuantity)
-                }} />
+                onChange={onChange} />
         </div>
     )
 }
 
-export default Potion
+export default PotionQuantifier
