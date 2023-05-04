@@ -44,4 +44,4 @@ export const usePotionQuantifier = (type: PotionType): PotionQuantifier => {
 };
 
 export const usePotionQuantifiers = () =>
-  usePotionStore((store) => store.potions);
+  usePotionStore((store) => ({ ...store.potions }));

@@ -26,10 +26,10 @@ describe('Damage Report', () => {
         expect(heading).toBeInTheDocument()
     })
 
-    it('renders a single attack when only one potion is selected and the total damage is 3%', async () => {
+    it('renders a single attack when only one potion is selected, and the total damage is 3%', async () => {
         renderPage()
 
-        buyPotion('blue', 3)
+        buyPotion('blue', 1)
 
         const attack1 = await screen.findByText(/Attack 1: using 1 potion deals 3% damage./i)
         const total = await screen.findByText(/Total: the warlock has dealt 3% damage./i)
@@ -38,6 +38,40 @@ describe('Damage Report', () => {
         expect(attack1).toBeInTheDocument()
         expect(total).toBeInTheDocument()
     })
+
+    it('renders three attacks when only one potion is selected three times, and the total damage is 9%', async () => {
+        renderPage()
+
+        buyPotion('blue', 3)
+
+        const attack1 = await screen.findByText(/Attack 1: using 1 potion deals 3% damage./i)
+        const attack2 = await screen.findByText(/Attack 2: using 1 potion deals 3% damage./i)
+        const attack3 = await screen.findByText(/Attack 3: using 1 potion deals 3% damage./i)
+        const total = await screen.findByText(/Total: the warlock has dealt 9% damage./i)
+
+        assertNumberOfAttacksIs(3)
+        expect(attack1).toBeInTheDocument()
+        expect(attack2).toBeInTheDocument()
+        expect(attack3).toBeInTheDocument()
+        expect(total).toBeInTheDocument()
+    })
+
+    it('renders two attacks when two potions are selected and the total damage is 6%', async () => {
+        renderPage()
+
+        buyPotion('blue', 1)
+        buyPotion('yellow', 1)
+
+        const attack1 = await screen.findByText(/Attack 1: using 1 potion deals 3% damage./i)
+        const attack2 = await screen.findByText(/Attack 2: using 1 potion deals 3% damage./i)
+        const total = await screen.findByText(/Total: the warlock has dealt 6% damage./i)
+
+        assertNumberOfAttacksIs(2)
+        expect(attack1).toBeInTheDocument()
+        expect(attack2).toBeInTheDocument()
+        expect(total).toBeInTheDocument()
+    })
+
 })
 
 function buyPotion(potionType: PotionType, amount: number) {

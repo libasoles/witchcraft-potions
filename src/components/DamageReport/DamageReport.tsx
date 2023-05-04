@@ -1,8 +1,7 @@
 import { usePotionQuantifiers } from "@/store"
-import type { PotionType } from "@/types"
 
-function filterAvailablePotions(quantifiers: Record<PotionType, number>) {
-    return Object.values(quantifiers).filter((quantity) => quantity !== 0)
+function onlyAvailablePotions(quantifiers: number[]) {
+    return quantifiers.filter((quantity) => quantity > 0)
 }
 
 const damagePercentByPotionQuantity = {
@@ -26,27 +25,75 @@ function explainTotal(percentage: number) {
     return `Total: the warlock has dealt ${percentage}% damage.`
 }
 
-function calculateDamage(quantifiers: Record<PotionType, number>) {
-    const availablePotions = filterAvailablePotions(quantifiers)
+const noAttack = {
+    attacks: [],
+    total: 0
+}
 
-    if (availablePotions.length === 0) return {
-        attacks: [],
-        total: 0
-    }
+const attackWithOnePotion = {
+    attacks: [1],
+    total: damagePercentByPotionQuantity[1]
+}
 
-    const attacks = [availablePotions.length]
-    const total = damagePercentByPotionQuantity[availablePotions.length as Quantity]
+type Attack = {
+    attacks: number[], // rename to damages
+    total: number
+}
 
+function potionsMinusOne(quantifiers: number[]) {
+    const first = quantifiers.shift() as number
+
+    return [first - 1, ...quantifiers]
+}
+
+function reduceAllPotionsInOne(quantifiers: number[]) {
+    return quantifiers.map(quantity => quantity - 1)
+}
+
+function sum(attack1: Attack, attack2: Attack) {
     return {
+        attacks: attack1.attacks.concat(attack2.attacks),
+        total: attack1.total + attack2.total
+    }
+}
+
+function max(attack1: Attack, attack2: Attack) {
+    return attack1.total > attack2.total ? attack1 : attack2
+}
+
+function attackUsingAllPotions(quantifiers: number[]): [Attack, number[]] {
+    const attacks = [quantifiers.length]
+    const total = damagePercentByPotionQuantity[quantifiers.length as Quantity]
+
+    const attack = {
         attacks,
         total
     }
+
+    return [attack, reduceAllPotionsInOne(quantifiers)]
+}
+
+function calculateDamage(quantifiers: number[]): Attack {
+    const availablePotions = onlyAvailablePotions(quantifiers)
+
+    if (availablePotions.length === 0) return noAttack
+
+    const [damageUsingAllPotions, remainingPotions] = attackUsingAllPotions(availablePotions)
+
+    if (availablePotions.length === 1)
+        return sum(damageUsingAllPotions, calculateDamage(remainingPotions))
+
+    const firstPlusRestCombination = sum(attackWithOnePotion, calculateDamage(potionsMinusOne(availablePotions)))
+
+    const bestStrategy = max(damageUsingAllPotions, firstPlusRestCombination)
+    console.log(bestStrategy)
+    return sum(bestStrategy, calculateDamage(remainingPotions))
 }
 
 export default function DamageReport() {
     const quantifiers = usePotionQuantifiers()
 
-    const { attacks, total } = calculateDamage(quantifiers)
+    const { attacks, total } = calculateDamage(Object.values(quantifiers))
 
     if (attacks.length === 0) return <div>No possible attacks.</div>
 
