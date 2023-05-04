@@ -5,8 +5,8 @@ import userEvent from '@testing-library/user-event'
 import { Potion } from '@/types';
 
 export const potionMocks: Potion[] = [
-    { id: "purple", name: "Purple Potion", image: "x.png" },
-    { id: "pink", name: "Pink Potion", image: "x.png" },
+    { id: "yellow", name: "Yellow Potion", image: "x.png" },
+    { id: "blue", name: "Blue Potion", image: "x.png" },
 ];
 
 describe('Simulator', () => {
@@ -32,11 +32,11 @@ describe('Simulator', () => {
             expect(quantity).toHaveValue(0)
         })
 
-        const purplePotion = screen.getByRole('img', { name: /Purple Potion/i })
-        const pinkPotion = screen.getByRole('img', { name: /Pink Potion/i })
+        const yellowPotion = screen.getByRole('img', { name: /Yellow Potion/i })
+        const bluePotion = screen.getByRole('img', { name: /Blue Potion/i })
 
-        expect(purplePotion).toBeInTheDocument()
-        expect(pinkPotion).toBeInTheDocument()
+        expect(yellowPotion).toBeInTheDocument()
+        expect(bluePotion).toBeInTheDocument()
     })
 
     it('renders a submit button', () => {
@@ -88,9 +88,7 @@ describe('Simulator', () => {
     it('calculates the resulting damage when two different potions are combined', async () => {
         renderPage()
 
-        const bluePotionQuantity = screen.getAllByRole('spinbutton', { name: /Quantity/i })[1]
-
-        await selectPotionAmount(0, 1)
+        await selectPotionAmount(0, 1) // TODO: name these numbers
         await selectPotionAmount(1, 1)
 
         pressSimulateButton()

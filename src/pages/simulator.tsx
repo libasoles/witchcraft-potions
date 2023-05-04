@@ -2,6 +2,7 @@ import PotionQuantifier from '@/components/Potion'
 import { useState } from 'react'
 import type { Potion } from '@/types'
 import { potions as PotionList } from '@/potions'
+import { usePotionQuantifiers } from '@/store'
 
 type Props = {
   potions: Potion[]
@@ -30,16 +31,24 @@ export default function Simulator({ potions = PotionList }: Props) {
         </Button>
       </div>
 
-      {
-        displayResultingDamage && <div className='m-8'>
-          <h2>Resulting Damage</h2>
-          <div data-testid='best-attacks'>
-            <div>Attack 1: using 1 potion deals 3% damage.</div>
-            <div>Attack 2: using 2 different potions deals 5% damage.</div>
-          </div>
-        </div>
-      }
+      {displayResultingDamage && <DamageReport />}
     </main>
+  )
+}
+
+function DamageReport() {
+  const quantifiers = usePotionQuantifiers()
+
+  const availablePotions = Object.values(quantifiers).filter((quantity) => quantity !== 0)
+
+  return (
+    <div className='m-8'>
+      <h2>Resulting Damage</h2>
+      <div data-testid='best-attacks'>
+        {availablePotions.length >= 1 && <div>Attack 1: using 1 potion deals 3% damage.</div>}
+        {availablePotions.length > 1 && <div>Attack 2: using 2 different potions deals 5% damage.</div>}
+      </div>
+    </div>
   )
 }
 

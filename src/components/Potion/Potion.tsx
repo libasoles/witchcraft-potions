@@ -1,6 +1,7 @@
 import { SyntheticEvent, useState } from 'react'
 import Image from 'next/image'
 import { Potion as PotionQuantifier } from '@/types';
+import { usePotionQuantifier } from '@/store';
 
 type Props = {
     potion: PotionQuantifier;
@@ -10,12 +11,12 @@ type Props = {
 const defaultAmount = 0
 
 function PotionQuantifier({ potion, onQuantitySelection }: Props) {
-    const [quantity, setQuantity] = useState(defaultAmount)
+    const [quantity, setQuantity] = usePotionQuantifier(potion.id)
 
     // TODO: use callback?
     const onChange = (event: SyntheticEvent) => {
         const target = event.target as HTMLInputElement
-        const newQuantity = target.value ? parseInt(target.value) : defaultAmount
+        const newQuantity = target.value ? parseInt(target.value) : defaultAmount // TODO: should delegate this to store?
         setQuantity(newQuantity)
         onQuantitySelection(newQuantity)
     }

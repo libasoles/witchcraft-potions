@@ -1,5 +1,7 @@
+export type PotionType = "red" | "blue" | "green" | "yellow" | "gray";
+
 export type Potion = {
-  id: string;
+  id: PotionType;
   name: string;
   image: string;
 };

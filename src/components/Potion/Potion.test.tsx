@@ -2,11 +2,11 @@ import { render, screen, waitFor } from '@testing-library/react'
 import '@testing-library/jest-dom'
 import userEvent from '@testing-library/user-event'
 import PotionQuantifier from './index'
-import { Potion } from '@/types'
+import type { Potion } from '@/types'
 
 const noAction = jest.fn()
 
-export const potionMock: Potion = { id: "purple", name: "Purple Potion", image: "x.png" };
+export const potionMock: Potion = { id: 'yellow', name: "Yellow Potion", image: "x.png" };
 
 describe('Potion', () => {
     function renderPotion() {
@@ -16,8 +16,8 @@ describe('Potion', () => {
     it('renders a potion with the provided name and image', () => {
         renderPotion()
 
-        const name = screen.getByText(/Purple Potion/i)
-        const image = screen.getByRole('img', { name: /Purple Potion/i })
+        const name = screen.getByText(/Yellow Potion/i)
+        const image = screen.getByRole('img', { name: /Yellow Potion/i })
 
         expect(name).toBeInTheDocument()
         expect(image).toBeInTheDocument() // TODO: actually assert that the image was rendered
