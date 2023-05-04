@@ -2,13 +2,14 @@ import { SyntheticEvent } from 'react'
 import Image from 'next/image'
 import { Potion as PotionQuantifier } from '@/types';
 import { usePotionQuantifier } from '@/store';
+import { minMaxAllowedQuantities } from '@/config';
 
 type Props = {
     potion: PotionQuantifier;
     onQuantitySelection: (quantity: number) => void
 }
 
-const defaultAmount = 0
+const [min, max] = minMaxAllowedQuantities
 
 function PotionQuantifier({ potion, onQuantitySelection }: Props) {
     const [quantity, setQuantity] = usePotionQuantifier(potion.id)
@@ -16,7 +17,11 @@ function PotionQuantifier({ potion, onQuantitySelection }: Props) {
     // TODO: use callback?
     const onChange = (event: SyntheticEvent) => {
         const target = event.target as HTMLInputElement
-        const newQuantity = target.value ? parseInt(target.value) : defaultAmount // TODO: should delegate this to store?
+
+        const value = parseInt(target.value) || 0
+        const limitedNum = Math.min(Math.max(value, min), max);
+
+        const newQuantity = limitedNum
         setQuantity(newQuantity)
         onQuantitySelection(newQuantity)
     }
@@ -30,7 +35,8 @@ function PotionQuantifier({ potion, onQuantitySelection }: Props) {
                 role="spinbutton"
                 aria-label='Quantity'
                 className='text-center w-16'
-                min={0}
+                min={min}
+                max={max}
                 value={quantity}
                 onChange={onChange} />
         </div>

@@ -89,8 +89,7 @@ describe('Damage Report', () => {
         expect(total).toBeInTheDocument()
     })
 
-
-    it('renders xxx', async () => {
+    it('renders three attacks dealing 31% damage', async () => {
         renderPage()
 
         buyPotion('red', 2)
@@ -111,6 +110,24 @@ describe('Damage Report', () => {
         expect(total).toBeInTheDocument()
     })
 
+    it('renders two attacks dealing 35% damage', async () => {
+        renderPage()
+
+        buyPotion('red', 2)
+        buyPotion('blue', 2)
+        buyPotion('green', 2)
+        buyPotion('yellow', 1)
+        buyPotion('gray', 1)
+
+        const attack1 = await screen.findByText(/Attack 1: using 5 different potions deals 25% damage./i)
+        const attack2 = await screen.findByText(/Attack 2: using 3 different potions deals 10% damage./i)
+        const total = await screen.findByText(/Total: the warlock has dealt 35% damage./i)
+
+        assertNumberOfAttacksIs(2)
+        expect(attack1).toBeInTheDocument()
+        expect(attack2).toBeInTheDocument()
+        expect(total).toBeInTheDocument()
+    })
 })
 
 function buyPotion(potionType: PotionType, amount: number) {

@@ -1,5 +1,7 @@
 import { Potions } from "./types";
 
+export const minMaxAllowedQuantities = [0, 100];
+
 export const potions: Potions = [
   { id: "red", name: "Red Potion", image: "redPotion.png" },
   { id: "blue", name: "Blue Potion", image: "bluePotion.png" },

@@ -65,6 +65,24 @@ describe('Potion', () => {
         })
     })
 
+    it('does not allow quantities greater than 100', async () => {
+        renderPotion()
+
+        const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
+
+        userEvent.type(quantitySelector, '101')
+
+        await waitFor(() => {
+            expect(quantitySelector).toHaveValue(100)
+        })
+
+        userEvent.clear(quantitySelector)
+
+        await waitFor(() => {
+            expect(quantitySelector).toHaveValue(0)
+        })
+    })
+
     it('does not allow non-numeric quantities', async () => {
         renderPotion()
 
