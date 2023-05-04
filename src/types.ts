@@ -5,3 +5,5 @@ export type Potion = {
   name: string;
   image: string;
 };
+
+export type Potions = Potion[];

@@ -1,6 +1,6 @@
-import { Potion } from "./types";
+import { Potions } from "./types";
 
-export const potions: Potion[] = [
+export const potions: Potions = [
   { id: "red", name: "Red Potion", image: "redPotion.png" },
   { id: "blue", name: "Blue Potion", image: "bluePotion.png" },
   { id: "green", name: "Green Potion", image: "greenPotion.png" },
