@@ -1,4 +1,4 @@
-import { SyntheticEvent, useState } from 'react'
+import { SyntheticEvent } from 'react'
 import Image from 'next/image'
 import { Potion as PotionQuantifier } from '@/types';
 import { usePotionQuantifier } from '@/store';

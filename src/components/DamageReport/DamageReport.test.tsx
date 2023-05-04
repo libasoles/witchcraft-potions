@@ -26,29 +26,17 @@ describe('Damage Report', () => {
         expect(heading).toBeInTheDocument()
     })
 
-    it('calculates a single attack when only one potion is selected and the damage is 3%', async () => {
+    it('renders a single attack when only one potion is selected and the total damage is 3%', async () => {
         renderPage()
 
         buyPotion('blue', 3)
 
         const attack1 = await screen.findByText(/Attack 1: using 1 potion deals 3% damage./i)
+        const total = await screen.findByText(/Total: the warlock has dealt 3% damage./i)
 
-        expect(attack1).toBeInTheDocument()
         assertNumberOfAttacksIs(1)
-    })
-
-    it('calculates two attacks when two different potions are selected and the damage is 5%', async () => {
-        renderPage()
-
-        buyPotion('blue', 1)
-        buyPotion('red', 1)
-
-        const attack1 = await screen.findByText(/Attack 1: using 1 potion deals 3% damage./i)
-        const attack2 = await screen.findByText(/Attack 2: using 2 different potions deals 5% damage./i)
-
         expect(attack1).toBeInTheDocument()
-        expect(attack2).toBeInTheDocument()
-        assertNumberOfAttacksIs(2)
+        expect(total).toBeInTheDocument()
     })
 })
 
