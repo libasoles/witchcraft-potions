@@ -28,8 +28,8 @@ export function calculateDamage(quantifiers: number[]): Attack {
     return sum(damageUsingAllPotions, calculateDamage(remainingPotions));
 
   const firstPlusRestCombination = sum(
-    attackWithOnePotion,
-    calculateDamage(potionsMinusOne(availablePotions))
+    calculateDamage(potionsMinusOneOfThem(availablePotions)),
+    attackWithOnePotion
   );
 
   const bestStrategy = max(damageUsingAllPotions, firstPlusRestCombination);
@@ -54,10 +54,11 @@ function attackUsingAllPotions(quantifiers: number[]): [Attack, number[]] {
   return [attack, reduceAllPotionsInOne(quantifiers)];
 }
 
-function potionsMinusOne(quantifiers: number[]) {
-  const first = quantifiers.shift() as number;
+function potionsMinusOneOfThem(quantifiers: number[]) {
+  const oneOfEach = quantifiers.slice().map(() => 1);
+  oneOfEach.pop();
 
-  return [first - 1, ...quantifiers];
+  return oneOfEach;
 }
 
 function reduceAllPotionsInOne(quantifiers: number[]) {
