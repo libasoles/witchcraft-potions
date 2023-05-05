@@ -9,6 +9,8 @@ export const potionMocks: Potions = [
     { id: "blue", name: "Blue Potion", image: "x.png" },
 ];
 
+const firstPotion = 0
+
 describe('Simulator', () => {
     function renderPage() {
         render(<Simulator potions={potionMocks} />)
@@ -32,6 +34,7 @@ describe('Simulator', () => {
             expect(quantity).toHaveValue(0)
         })
 
+        // TODO: assert the actual image was rendered
         const yellowPotion = screen.getByRole('img', { name: /Yellow Potion/i })
         const bluePotion = screen.getByRole('img', { name: /Blue Potion/i })
 
@@ -43,7 +46,7 @@ describe('Simulator', () => {
         it('renders a submit button', () => {
             renderPage()
 
-            const submitButton = screen.getByRole('button', { name: /Simulate/i })
+            const submitButton = getSubmitButton()
 
             expect(submitButton).toBeInTheDocument()
         })
@@ -51,7 +54,7 @@ describe('Simulator', () => {
         it('disables the submit button by default because no quantity is selected', () => {
             renderPage()
 
-            const submitButton = screen.getByRole('button', { name: /Simulate/i })
+            const submitButton = getSubmitButton()
 
             expect(submitButton).toBeDisabled()
         })
@@ -59,10 +62,9 @@ describe('Simulator', () => {
         it('enables the submit button when a quantity is selected', async () => {
             renderPage()
 
-            const firstPotion = 0
             await selectPotionAmount(firstPotion, 1)
 
-            const submitButton = screen.getByRole('button', { name: /Simulate/i })
+            const submitButton = getSubmitButton()
 
             expect(submitButton).toBeEnabled()
         })
@@ -70,12 +72,11 @@ describe('Simulator', () => {
         it('dissapears after the submit button is pressed and damage report is displayed', async () => {
             renderPage()
 
-            const firstPotion = 0
             await selectPotionAmount(firstPotion, 1)
 
             pressSimulateButton()
 
-            const submitButton = screen.getByRole('button', { name: /Simulate/i })
+            const submitButton = getSubmitButton()
 
             await waitFor(() => {
                 expect(submitButton).not.toBeInTheDocument()
@@ -98,7 +99,6 @@ describe('Simulator', () => {
             const heading = screen.queryByRole('heading', { name: /Resulting Damage/i })
             expect(heading).not.toBeInTheDocument()
 
-            const firstPotion = 0
             await selectPotionAmount(firstPotion, 1)
 
             pressSimulateButton()
@@ -116,7 +116,6 @@ describe('Simulator', () => {
         it('keeps updating when potion quantities are changed', async () => {
             renderPage()
 
-            const firstPotion = 0
             await selectPotionAmount(firstPotion, 1)
 
             pressSimulateButton()
@@ -134,15 +133,18 @@ describe('Simulator', () => {
     })
 })
 
+function getSubmitButton() {
+    return screen.getByRole('button', { name: /Simulate/i })
+}
+
 function pressSimulateButton() {
-    const submitButton = screen.getByRole('button', { name: /Simulate/i })
+    const submitButton = getSubmitButton()
 
     userEvent.click(submitButton)
 }
 
-// TODO: identify potion by enum?
-async function selectPotionAmount(potion: number, amount: number) {
-    const potionQuantifier = screen.getAllByRole('spinbutton', { name: /Quantity/i })[potion]
+async function selectPotionAmount(potionIndex: number, amount: number) {
+    const potionQuantifier = screen.getAllByRole('spinbutton', { name: /Quantity/i })[potionIndex]
 
     userEvent.clear(potionQuantifier)
     userEvent.type(potionQuantifier, String(amount))

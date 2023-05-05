@@ -4,13 +4,11 @@ import userEvent from '@testing-library/user-event'
 import PotionQuantifier from './index'
 import type { Potion } from '@/types'
 
-const noAction = jest.fn()
-
 export const potionMock: Potion = { id: 'yellow', name: "Yellow Potion", image: "x.png" };
 
 describe('Potion', () => {
     function renderPotion() {
-        render(<PotionQuantifier potion={potionMock} onQuantitySelection={noAction} />)
+        render(<PotionQuantifier potion={potionMock} />)
     }
 
     beforeEach(jest.clearAllMocks)
@@ -68,7 +66,7 @@ describe('Potion', () => {
             await expectToSeeValue(0)
         })
 
-        it('does not an empty value', async () => {
+        it('does not allow an empty value', async () => {
             renderPotion()
 
             const quantitySelector = getNumericInput()
