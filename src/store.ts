@@ -1,4 +1,4 @@
-import { create } from "zustand";
+import { StateCreator, create } from "zustand";
 import { immer } from "zustand/middleware/immer";
 import { PotionType } from "./types";
 
@@ -15,6 +15,8 @@ type PotionState = {
 type Store = PotionState;
 type Mutators = [["zustand/immer", never]];
 
+type PotionSlice = StateCreator<Store, Mutators, [], PotionState>;
+
 const initialState = {
   red: 0,
   yellow: 0,
@@ -23,18 +25,19 @@ const initialState = {
   gray: 0,
 };
 
-// TODO: readiness could be improved as soon as state grows and we separate the store in slices
+export const potionsSlice: PotionSlice = (set, get) => ({
+  potions: { ...initialState },
+  update: (type) => (amount) =>
+    set((draft) => {
+      draft.potions[type] = amount;
+    }),
+  isAnyPotionSelected: () => {
+    return Object.values(get().potions).some((potion) => potion > 0);
+  },
+});
+
 const usePotionStore = create<Store, Mutators>(
-  immer((set, get) => ({
-    potions: { ...initialState },
-    update: (type) => (amount) =>
-      set((draft) => {
-        draft.potions[type] = amount;
-      }),
-    isAnyPotionSelected: () => {
-      return Object.values(get().potions).some((potion) => potion > 0);
-    },
-  }))
+  immer((...args) => potionsSlice(...args))
 );
 
 type PotionQuantifier = [number, UpdateQuantity];
