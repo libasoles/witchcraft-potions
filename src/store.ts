@@ -8,7 +8,6 @@ type PotionState = {
   potions: {
     readonly [key in PotionType]: number;
   };
-} & {
   update: (type: PotionType) => UpdateQuantity;
   isAnyPotionSelected: () => boolean;
 };
@@ -24,6 +23,7 @@ const initialState = {
   gray: 0,
 };
 
+// TODO: readiness could be improved as soon as state grows and we separate the store in slices
 const usePotionStore = create<Store, Mutators>(
   immer((set, get) => ({
     potions: { ...initialState },

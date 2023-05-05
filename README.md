@@ -1,38 +1,64 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Witchcraft simulator
 
-## Getting Started
+by: Guillermo Perez
 
-First, run the development server:
+## Description
+
+A witch has entered a shop and has bought a certain number of potions to go to kill a strige.
+
+The challenge is to carry out an algorithm that helps the witch to calculate the most optimal attacks for a given amount of potions, regardless of the number of attacks and combinations he makes as long as:
+
+- You can only combine potions of different colors.
+- The result must be the combinations that cause the most damage.
+
+![Screenshot](https://github.com/libasoles/witchcraft-potions/blob/main/public/screenshot.png)
+
+## Techonologies
+
+- React (compiled with Next.js)
+- Typescript
+- Tailwind CSS
+- Jest and Testing Library
+- Zustand for state management
+
+## Running the code
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the development server:
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Run the tests:
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```bash
+npm run test
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+## About the code
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+I'm using `Next.js` because it's one of the main framework that React documentation recommends. But I'm not actually using many of the features that Next.js provides because this is an small project. I could have used Vite as well.
 
-## Learn More
+Entry point is pages folder. There's only one page there, the `Simulator`.
 
-To learn more about Next.js, take a look at the following resources:
+It receives a list of potions, so tests can inject whatever they want. However, typescript constrains the type of potions allowed. They have to be one of 'red','blue', etc.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+There's a `types.ts` file where you can see the above. It might call your attention that also the number of potions is constrained to be between 1 and 5. That's helpful for the algorithm as it works with a limited number of potions and typescript has to acknowledge that as well.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+The store is written with `Zustand`and deserves a few comments. First, I'm using `Immer` so I can pretend I'm mutating state while under the hood Immer is maintaining inmutability. If you are not familiar with Zustand, the reducers might look a bit busy but that could be improved as soon as state grows and store separates in slices.
 
-## Deploy on Vercel
+I'm exporting two custom hooks from there and not the store itself. That provides the clients only what they need.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+`usePotionQuantifier` works almost like `useState`. It provides the current amount of a given potion, and a mean to update that amount. Note that I'm _currying_ the update function so the client can pick a quantifier for a given potion instead of dealing with the whole stock.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+You'll see there's a mock for the store inside `__mocks__` folder. That will take care of cleaning up the store after each test run.
+
+Now, a comment about the _components_ folder. I create a folder for each component, and inside that folder I put the component itself, the styles, the tests, hooks and whatever is directly related to the component.

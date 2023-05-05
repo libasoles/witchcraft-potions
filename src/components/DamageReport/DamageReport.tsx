@@ -1,7 +1,7 @@
 import { damagePercentByPotionQuantity } from "@/config"
 import { usePotionQuantifiers } from "@/store"
 import { calculateDamage } from "./calculateDamage"
-import type { AmountOfPotions as NumberOfPotions } from "@/types"
+import type { NumberOfPotions } from "@/types"
 
 export default function DamageReport() {
     const { quantifiers } = usePotionQuantifiers()

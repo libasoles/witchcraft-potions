@@ -1,5 +1,5 @@
 import { damagePercentByPotionQuantity } from "@/config";
-import type { AmountOfPotions } from "@/types";
+import type { NumberOfPotions } from "@/types";
 
 type Attack = {
   attacks: number[]; // rename to damages?
@@ -46,7 +46,7 @@ function onlyAvailablePotions(quantifiers: number[]) {
 function attackUsingAllPotions(quantifiers: number[]): [Attack, number[]] {
   const attacks = [quantifiers.length];
   const total =
-    damagePercentByPotionQuantity[quantifiers.length as AmountOfPotions];
+    damagePercentByPotionQuantity[quantifiers.length as NumberOfPotions];
 
   const attack = {
     attacks,

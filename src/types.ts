@@ -10,4 +10,4 @@ export type Potion = {
 
 export type Potions = Potion[];
 
-export type AmountOfPotions = keyof typeof damagePercentByPotionQuantity;
+export type NumberOfPotions = keyof typeof damagePercentByPotionQuantity;
