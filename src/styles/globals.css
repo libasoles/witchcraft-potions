@@ -23,11 +23,14 @@
 }
 
 html,
-body {
+body,
+#__next {
   height: 100%;
 }
 
 body {
   color: rgb(var(--foreground-rgb));
   background: rgb(var(--background-rgb));
+  display: flex;
+  justify-content: center;
 }

@@ -4,24 +4,28 @@ import { AmountOfPotions as NumberOfPotions } from "@/types"
 import { calculateDamage } from "./calculateDamage"
 
 export default function DamageReport() {
-    const quantifiers = usePotionQuantifiers()
+    const { quantifiers } = usePotionQuantifiers()
 
     const { attacks, total } = calculateDamage(Object.values(quantifiers))
 
     if (attacks.length === 0) return <div>No possible attacks. Select at least one potion.</div>
 
     return (
-        <div className='m-8'>
-            <h2>Resulting Damage</h2>
-            <div data-testid='best-attacks'>
+        <div className='bg-gray-800 text-white w-full p-4 m-8 animate-fade-in-out'>
+            <h2 className="text-2xl font-bold mb-4">Resulting Damage</h2>
+            <ul className="list-disc list-inside mb-4" data-testid='best-attacks'>
                 {attacks.map((numberOfPotions: number, index: number) => {
                     const description = explainAttack(numberOfPotions as NumberOfPotions)
 
-                    return <div key={index}>Attack {index + 1}: {description}</div>
+                    return <li key={index} className="mb-2">Attack {index + 1}: {description}</li>
                 })}
 
+            </ul>
+            <div className="border-t border-gray-700 pt-4">
+                <p className="text-lg font-bold" data-testid="total">
+                    Total: {explainTotal(total)}
+                </p>
             </div>
-            <div>Total: {explainTotal(total)}</div>
         </div>
     )
 }

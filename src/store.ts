@@ -10,6 +10,7 @@ type PotionState = {
   };
 } & {
   update: (type: PotionType) => UpdateQuantity;
+  isAnyPotionSelected: () => boolean;
 };
 
 type Store = PotionState;
@@ -24,12 +25,15 @@ const initialState = {
 };
 
 const usePotionStore = create<Store, Mutators>(
-  immer((set) => ({
+  immer((set, get) => ({
     potions: { ...initialState },
     update: (type) => (amount) =>
       set((draft) => {
         draft.potions[type] = amount;
       }),
+    isAnyPotionSelected: () => {
+      return Object.values(get().potions).some((potion) => potion > 0);
+    },
   }))
 );
 
@@ -43,5 +47,11 @@ export const usePotionQuantifier = (type: PotionType): PotionQuantifier => {
   return [amount, update];
 };
 
-export const usePotionQuantifiers = () =>
-  usePotionStore((store) => ({ ...store.potions }));
+export const usePotionQuantifiers = () => {
+  const store = usePotionStore();
+
+  return {
+    quantifiers: { ...store.potions },
+    isAnyPotionSelected: store.isAnyPotionSelected,
+  };
+};

@@ -39,51 +39,98 @@ describe('Simulator', () => {
         expect(bluePotion).toBeInTheDocument()
     })
 
-    it('renders a submit button', () => {
-        renderPage()
+    describe('button', () => {
+        it('renders a submit button', () => {
+            renderPage()
 
-        const submitButton = screen.getByRole('button', { name: /Simulate/i })
+            const submitButton = screen.getByRole('button', { name: /Simulate/i })
 
-        expect(submitButton).toBeInTheDocument()
+            expect(submitButton).toBeInTheDocument()
+        })
+
+        it('disables the submit button by default because no quantity is selected', () => {
+            renderPage()
+
+            const submitButton = screen.getByRole('button', { name: /Simulate/i })
+
+            expect(submitButton).toBeDisabled()
+        })
+
+        it('enables the submit button when a quantity is selected', async () => {
+            renderPage()
+
+            const firstPotion = 0
+            await selectPotionAmount(firstPotion, 1)
+
+            const submitButton = screen.getByRole('button', { name: /Simulate/i })
+
+            expect(submitButton).toBeEnabled()
+        })
+
+        it('dissapears after the submit button is pressed and damage report is displayed', async () => {
+            renderPage()
+
+            const firstPotion = 0
+            await selectPotionAmount(firstPotion, 1)
+
+            pressSimulateButton()
+
+            const submitButton = screen.getByRole('button', { name: /Simulate/i })
+
+            await waitFor(() => {
+                expect(submitButton).not.toBeInTheDocument()
+            })
+        })
     })
 
-    it('disables the submit button by default because no quantity is selected', () => {
-        renderPage()
+    describe('damage report', () => {
+        it('does not render the damage report by default', () => {
+            renderPage()
 
-        const submitButton = screen.getByRole('button', { name: /Simulate/i })
+            const heading = screen.queryByRole('heading', { name: /Resulting Damage/i })
 
-        expect(submitButton).toBeDisabled()
-    })
+            expect(heading).not.toBeInTheDocument()
+        })
 
-    it('enables the submit button when a quantity is selected', async () => {
-        renderPage()
+        it('calculates the resulting damage when the submit button is pressed', async () => {
+            renderPage()
 
-        const firstPotion = 0
-        await selectPotionAmount(firstPotion, 1)
+            const heading = screen.queryByRole('heading', { name: /Resulting Damage/i })
+            expect(heading).not.toBeInTheDocument()
 
-        const submitButton = screen.getByRole('button', { name: /Simulate/i })
+            const firstPotion = 0
+            await selectPotionAmount(firstPotion, 1)
 
-        expect(submitButton).toBeEnabled()
-    })
+            pressSimulateButton()
 
-    it('calculates the resulting damage when the submit button is pressed', async () => {
-        renderPage()
+            const resultingDamageHeader = await screen.findByRole('heading', { name: /Resulting Damage/i })
+            expect(resultingDamageHeader).toBeInTheDocument()
 
-        const heading = screen.queryByRole('heading', { name: /Resulting Damage/i })
-        expect(heading).not.toBeInTheDocument()
+            await assertNumberOfAttacksIs(1)
 
-        const firstPotion = 0
-        await selectPotionAmount(firstPotion, 1)
+            const attack1 = screen.getByText(/Attack 1: using 1 potion deals 3% damage./i)
+            expect(attack1).toBeInTheDocument()
+            assertTotalDamageIs(3)
+        })
 
-        pressSimulateButton()
+        it('keeps updating when potion quantities are changed', async () => {
+            renderPage()
 
-        const resultingDamageHeader = await screen.findByRole('heading', { name: /Resulting Damage/i })
-        expect(resultingDamageHeader).toBeInTheDocument()
+            const firstPotion = 0
+            await selectPotionAmount(firstPotion, 1)
 
-        assertNumberOfAttacksIs(1)
+            pressSimulateButton()
 
-        const attack1 = screen.getByText(/Attack 1: using 1 potion deals 3% damage./i)
-        expect(attack1).toBeInTheDocument()
+            await assertNumberOfAttacksIs(1)
+
+            assertTotalDamageIs(3)
+
+            await selectPotionAmount(firstPotion, 2)
+
+            await assertNumberOfAttacksIs(2)
+
+            assertTotalDamageIs(6)
+        })
     })
 })
 
@@ -97,6 +144,7 @@ function pressSimulateButton() {
 async function selectPotionAmount(potion: number, amount: number) {
     const potionQuantifier = screen.getAllByRole('spinbutton', { name: /Quantity/i })[potion]
 
+    userEvent.clear(potionQuantifier)
     userEvent.type(potionQuantifier, String(amount))
 
     await waitFor(() => {
@@ -104,7 +152,14 @@ async function selectPotionAmount(potion: number, amount: number) {
     })
 }
 
-function assertNumberOfAttacksIs(amount: number) {
-    const bestAttacks = screen.getByTestId('best-attacks')
-    expect(bestAttacks.childElementCount).toBe(amount)
+async function assertNumberOfAttacksIs(amount: number) {
+    await waitFor(() => {
+        const bestAttacks = screen.getByTestId('best-attacks')
+        expect(bestAttacks.childElementCount).toBe(amount)
+    })
+}
+
+async function assertTotalDamageIs(percentage: number) {
+    const totalDamage = await screen.findByTestId("total")
+    expect(totalDamage).toHaveTextContent(`Total: the warlock has dealt ${percentage}% damage.`)
 }

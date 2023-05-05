@@ -35,15 +35,6 @@ describe('Potion', () => {
             expect(quantitySelector).toHaveValue(0)
         })
 
-        it('on change calls onQuantitySelection with the selected quantity', async () => {
-            renderPotion()
-
-            write(1)
-            await expectToSeeValue(1)
-
-            expect(noAction).toHaveBeenCalledWith(1)
-        })
-
         it('has a button to decrease the quantity', async () => {
             renderPotion()
 

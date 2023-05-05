@@ -1,34 +1,31 @@
 import PotionQuantifier from '@/components/Potion'
-import { useCallback, useState } from 'react'
-import type { Potions } from '@/types'
+import { useState } from 'react'
 import { potions as PotionList } from '@/config'
 import DamageReport from '@/components/DamageReport'
+import { usePotionQuantifiers } from '@/store'
+import type { Potions } from '@/types'
 
 type Props = {
   potions: Potions
 }
 
 export default function Simulator({ potions = PotionList }: Props) {
-  const [isSimulationButtonEnabled, setIsSimulationButtonEnabled] = useState(false)
   const [displayResultingDamage, setDisplayResultingDamage] = useState(false)
 
-  const onQuantitySelection = useCallback((quantity: number) => {
-    const isQuantityValid = quantity !== 0
-    setIsSimulationButtonEnabled(isQuantityValid)
-  }, [])
-
   return (
-    <main className='p-8'>
+    <main className='flex flex-col items-center w-[56em] p-8 h-full'>
       <h1 className="text-6xl font-mono text-center text-gray-800">Attack simulator</h1>
 
       <div className='flex flex-col gap-6 items-center m-8'>
         <div className='flex gap-6 justify-center'>
-          {potions.map((potion) => <PotionQuantifier key={potion.id} potion={potion} onQuantitySelection={onQuantitySelection} />)}
+          {potions.map((potion) => <PotionQuantifier key={potion.id} potion={potion} />)}
         </div>
 
-        <Button enabled={isSimulationButtonEnabled} onClick={setDisplayResultingDamage}>
-          Simulate
-        </Button>
+        {!displayResultingDamage &&
+          <Button onClick={setDisplayResultingDamage}>
+            Simulate
+          </Button>
+        }
       </div>
 
       {displayResultingDamage && <DamageReport />}
@@ -38,11 +35,13 @@ export default function Simulator({ potions = PotionList }: Props) {
 
 type ButtonProps = {
   children: React.ReactNode
-  enabled: boolean
   onClick: (enabled: boolean) => void
 }
 
-function Button({ children, enabled, onClick }: ButtonProps) {
+function Button({ children, onClick }: ButtonProps) {
+  const { isAnyPotionSelected } = usePotionQuantifiers()
+  const enabled = isAnyPotionSelected()
+
   return <button type="button"
     disabled={!enabled}
     onClick={() => onClick(true)}

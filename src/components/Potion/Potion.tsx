@@ -6,7 +6,6 @@ import { minMaxAllowedQuantities } from '@/config';
 
 type Props = {
     potion: PotionQuantifier;
-    onQuantitySelection: (quantity: number) => void
 }
 
 const [min, max] = minMaxAllowedQuantities
@@ -15,18 +14,17 @@ function constrain(value: number) {
     return Math.min(Math.max(value, min), max);
 }
 
-function PotionQuantifier({ potion, onQuantitySelection }: Props) {
+function PotionQuantifier({ potion }: Props) {
     const [quantity, setQuantity] = usePotionQuantifier(potion.id)
 
     const updateQuantity = useCallback((quantity: number) => {
         const limitedValue = constrain(quantity);
 
         setQuantity(limitedValue)
-        onQuantitySelection(limitedValue)
-    }, [setQuantity, onQuantitySelection])
+    }, [setQuantity])
 
     const handleIncrease = () => {
-        updateQuantity(quantity + 1);
+        updateQuantity(quantity + 1); // TODO: maybe receive previous value using a lambda
     };
 
     const handleDecrease = () => {
