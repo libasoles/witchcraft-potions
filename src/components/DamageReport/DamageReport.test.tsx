@@ -77,6 +77,8 @@ describe('Damage Report', () => {
         buyPotion('yellow', 2)
         buyPotion('gray', 1)
 
+        await waitFor(() => expect(screen.queryByText(/Attack 3/)).not.toBeInTheDocument())
+
         const attack1 = await screen.findByText(/Attack 1: using 3 different potions deals 10% damage./i)
         const attack2 = await screen.findByText(/Attack 2: using 1 potion deals 3% damage./i)
 
@@ -154,6 +156,5 @@ function assertNumberOfAttacksIs(amount: number) {
 
 function assertTotalDamageWas(percentage: number) {
     const total = screen.getByText(`Total: the warlock has dealt ${percentage}% damage.`)
-
     expect(total).toBeInTheDocument()
 }
