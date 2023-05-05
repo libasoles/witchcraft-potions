@@ -43,6 +43,26 @@ Run the tests:
 npm run test
 ```
 
+## Algorithm explained
+
+Though it should explain itself, I'll comment the algorithm in a few words.
+
+I'm using recursion to consume the potions. The base cases are:
+
+- When there's no potions left, the algorithm returns an empty array (an empty list of attacks)
+- When there's only one potion left. In that case, the algorithm returns a list with a single potion attack.
+
+The algorithm evaluates two possible approaches:
+
+- attack using all available potions
+- attack separating the potions in groups (recursively)
+
+It only returns the best of those two approaches. And it returns numbers, not messages. Because presentation is not the algorithm's concern.
+
+As the algorithm use recursive, the list of attacks piles up. The total is calculated in place, during iterations. Maybe it could have been calculated afterwards, but it was useful to compare the two approaches.
+
+Finally, I'm not testing the algorithm itself directly. Instead I'm testing the component that consumes it and renders the results, so I can test the whole thing with messages being rendered on screen (the presentational aspect).
+
 ## About the code
 
 I'm using `Next.js` because it's one of the main framework that React documentation recommends. But I'm not actually using many of the features that Next.js provides because this is an small project. I could have used Vite as well.
