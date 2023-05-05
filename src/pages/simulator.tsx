@@ -1,5 +1,5 @@
 import PotionQuantifier from '@/components/Potion'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import type { Potions } from '@/types'
 import { potions as PotionList } from '@/config'
 import DamageReport from '@/components/DamageReport'
@@ -12,10 +12,10 @@ export default function Simulator({ potions = PotionList }: Props) {
   const [isSimulationButtonEnabled, setIsSimulationButtonEnabled] = useState(false)
   const [displayResultingDamage, setDisplayResultingDamage] = useState(false)
 
-  const onQuantitySelection = (quantity: number) => {
+  const onQuantitySelection = useCallback((quantity: number) => {
     const isQuantityValid = quantity !== 0
     setIsSimulationButtonEnabled(isQuantityValid)
-  } // TODO: wrap in useCallback?
+  }, [])
 
   return (
     <main className='p-8'>

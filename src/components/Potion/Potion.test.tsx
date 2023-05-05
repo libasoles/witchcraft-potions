@@ -13,6 +13,8 @@ describe('Potion', () => {
         render(<PotionQuantifier potion={potionMock} onQuantitySelection={noAction} />)
     }
 
+    beforeEach(jest.clearAllMocks)
+
     it('renders a potion with the provided name and image', () => {
         renderPotion()
 
@@ -23,81 +25,100 @@ describe('Potion', () => {
         expect(image).toBeInTheDocument() // TODO: actually assert that the image was rendered
     })
 
-    it('renders a quantity selector with 0 amount by default', () => {
-        renderPotion()
+    describe('quantity selector', () => {
+        it('renders a quantity selector with 0 amount by default', () => {
+            renderPotion()
 
-        const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
+            const quantitySelector = getNumericInput()
 
-        expect(quantitySelector).toBeInTheDocument()
-        expect(quantitySelector).toHaveValue(0)
-    })
-
-    it('calls onQuantitySelection with the selected quantity', async () => {
-        const onQuantitySelection = jest.fn()
-        render(<PotionQuantifier potion={potionMock} onQuantitySelection={onQuantitySelection} />)
-
-        const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
-
-        userEvent.type(quantitySelector, '1')
-
-        await waitFor(() => {
-            expect(quantitySelector).toHaveValue(1)
-        })
-
-        expect(onQuantitySelection).toHaveBeenCalledWith(1)
-    })
-
-    it('does not allow negative quantities', async () => {
-        renderPotion()
-
-        const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
-
-        userEvent.type(quantitySelector, '-1')
-
-        await waitFor(() => {
+            expect(quantitySelector).toBeInTheDocument()
             expect(quantitySelector).toHaveValue(0)
         })
 
-        userEvent.clear(quantitySelector)
+        it('on change calls onQuantitySelection with the selected quantity', async () => {
+            renderPotion()
 
-        await waitFor(() => {
-            expect(quantitySelector).toHaveValue(0)
-        })
-    })
+            write(1)
+            await expectToSeeValue(1)
 
-    it('does not allow quantities greater than 100', async () => {
-        renderPotion()
-
-        const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
-
-        userEvent.type(quantitySelector, '101')
-
-        await waitFor(() => {
-            expect(quantitySelector).toHaveValue(100)
+            expect(noAction).toHaveBeenCalledWith(1)
         })
 
-        userEvent.clear(quantitySelector)
+        it('has a button to decrease the quantity', async () => {
+            renderPotion()
 
-        await waitFor(() => {
-            expect(quantitySelector).toHaveValue(0)
-        })
-    })
+            const decreaseButton = screen.getByRole('button', { name: /decrease/i })
 
-    it('does not allow non-numeric quantities', async () => {
-        renderPotion()
+            write(1)
+            await expectToSeeValue(1)
 
-        const quantitySelector = screen.getByRole('spinbutton', { name: /Quantity/i })
+            userEvent.click(decreaseButton)
 
-        userEvent.type(quantitySelector, 'a')
-
-        await waitFor(() => {
-            expect(quantitySelector).toHaveValue(0)
+            await expectToSeeValue(0)
         })
 
-        userEvent.clear(quantitySelector)
+        it('has a button to increase the quantity', async () => {
+            renderPotion()
 
-        await waitFor(() => {
-            expect(quantitySelector).toHaveValue(0)
+            const increaseButton = screen.getByRole('button', { name: /increase/i })
+
+            await expectToSeeValue(0)
+
+            userEvent.click(increaseButton)
+
+            await expectToSeeValue(1)
+        })
+
+        it('does not allow negative quantities', async () => {
+            renderPotion()
+
+            write(-1)
+
+            await expectToSeeValue(0)
+        })
+
+        it('does not an empty value', async () => {
+            renderPotion()
+
+            const quantitySelector = getNumericInput()
+
+            userEvent.clear(quantitySelector)
+
+            await expectToSeeValue(0)
+        })
+
+        it('does not allow quantities greater than 100', async () => {
+            renderPotion()
+
+            write(101)
+
+            await expectToSeeValue(100)
+        })
+
+        it('does not allow non-numeric quantities', async () => {
+            renderPotion()
+
+            write('a')
+
+            await expectToSeeValue(0)
         })
     })
 })
+
+function getNumericInput() {
+    return screen.getByRole('spinbutton', { name: /quantity/i })
+}
+
+function write(value: number | string) {
+    const quantitySelector = getNumericInput()
+
+    userEvent.type(quantitySelector, String(value))
+}
+
+async function expectToSeeValue(value: number) {
+    const quantitySelector = getNumericInput()
+
+    await waitFor(() => {
+        expect(quantitySelector).toHaveValue(value)
+    })
+}
