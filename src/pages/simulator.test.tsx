@@ -2,7 +2,7 @@ import '@testing-library/jest-dom'
 import { render, screen, waitFor } from '@testing-library/react'
 import Simulator from './index'
 import userEvent from '@testing-library/user-event'
-import { Potions } from '@/types';
+import type { Potions } from '@/types';
 
 export const potionMocks: Potions = [
     { id: "yellow", name: "Yellow Potion", image: "x.png" },

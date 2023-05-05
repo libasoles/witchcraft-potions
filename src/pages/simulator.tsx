@@ -1,5 +1,5 @@
-import PotionQuantifier from '@/components/Potion'
 import { useState } from 'react'
+import PotionQuantifier from '@/components/Potion'
 import { potions as PotionList } from '@/config'
 import DamageReport from '@/components/DamageReport'
 import { usePotionQuantifiers } from '@/store'
@@ -10,25 +10,25 @@ type Props = {
 }
 
 export default function Simulator({ potions = PotionList }: Props) {
-  const [displayResultingDamage, setDisplayResultingDamage] = useState(false)
+  const [isDamageReportVisible, setDamageReportVisible] = useState(false)
 
   return (
-    <main className='flex flex-col items-center w-[56em] p-8 h-full'>
-      <h1 className="text-6xl font-mono text-center text-gray-800">Attack simulator</h1>
+    <main className='flex flex-col items-center w-[56em] p-8 h-full text-gray-300'>
+      <h1 className="text-6xl font-mono text-center text-gray-500">Attack simulator</h1>
 
       <div className='flex flex-col gap-6 items-center m-8'>
         <div className='flex gap-6 justify-center'>
           {potions.map((potion) => <PotionQuantifier key={potion.id} potion={potion} />)}
         </div>
 
-        {!displayResultingDamage &&
-          <Button onClick={setDisplayResultingDamage}>
+        {!isDamageReportVisible &&
+          <Button onClick={setDamageReportVisible}>
             Simulate
           </Button>
         }
-      </div>
 
-      {displayResultingDamage && <DamageReport />}
+        {isDamageReportVisible && <DamageReport />}
+      </div>
     </main>
   )
 }
@@ -45,8 +45,9 @@ function Button({ children, onClick }: ButtonProps) {
   return <button type="button"
     disabled={!enabled}
     onClick={() => onClick(true)}
-    className='bg-green-500 hover:bg-green-700 
-    text-white font-bold py-2 px-4 rounded w-fit
-    enabled:cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed'
+    className='bg-green-700 hover:bg-green-800 
+    text-gray-300 hover:text-gray-200
+      disabled:text-gray-700 font-bold py-2 px-4 rounded w-fit
+      enabled:cursor-pointer disabled:bg-gray-400 disabled:cursor-not-allowed'
   >{children}</button>
 }

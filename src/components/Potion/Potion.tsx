@@ -1,8 +1,8 @@
 import { SyntheticEvent, ReactNode, useCallback } from 'react'
 import Image from 'next/image'
-import { Potion as PotionQuantifier } from '@/types';
 import { usePotionQuantifier } from '@/store';
 import { minMaxAllowedQuantities } from '@/config';
+import type { Potion as PotionQuantifier } from '@/types';
 
 type Props = {
     potion: PotionQuantifier;
@@ -50,7 +50,7 @@ function PotionQuantifier({ potion }: Props) {
                     name="quantity"
                     role="spinbutton"
                     aria-label='Quantity'
-                    className='text-center w-16 border-gray-400 border rounded-none px-4 py-2 text-center"'
+                    className='text-center w-16 bg-gray-800 text-gray-300 border-gray-700 border rounded-none px-4 py-2 text-center"'
                     min={min}
                     max={max}
                     value={quantity}
@@ -66,7 +66,7 @@ type ButtonProps = { onClick: (e: SyntheticEvent) => void, className: string, na
 
 function Button({ onClick, className, name, children }: ButtonProps) {
     return (
-        <button onClick={onClick} className={`bg-gray-300 text-gray-700 px-4 py-2 border ${className} border-gray-400`} name={name} aria-label={name}>
+        <button onClick={onClick} className={`bg-gray-700 text-gray-300 px-4 py-2 border ${className} border-gray-700`} name={name} aria-label={name}>
             {children}
         </button>
     )

@@ -1,8 +1,8 @@
 import { damagePercentByPotionQuantity } from "@/config";
-import { AmountOfPotions } from "@/types";
+import type { AmountOfPotions } from "@/types";
 
 type Attack = {
-  attacks: number[]; // rename to damages
+  attacks: number[]; // rename to damages?
   total: number;
 };
 
@@ -11,9 +11,11 @@ const noAttack = {
   total: 0,
 };
 
+const onePotion = 1;
+
 const attackWithOnePotion = {
-  attacks: [1], // TODO: semantic name for this number?
-  total: damagePercentByPotionQuantity[1],
+  attacks: [onePotion],
+  total: damagePercentByPotionQuantity[onePotion],
 };
 
 export function calculateDamage(quantifiers: number[]): Attack {
