@@ -128,6 +128,21 @@ describe('Damage Report', () => {
         expect(attack2).toBeInTheDocument()
         expect(total).toBeInTheDocument()
     })
+
+    // TODO: this one will be probably flakey
+    it('renders the more expensive calculation in less than 200ms', async () => {
+        renderPage()
+
+        buyPotion('red', 100)
+        buyPotion('blue', 100)
+        buyPotion('green', 100)
+        buyPotion('yellow', 100)
+        buyPotion('gray', 100)
+
+        const total = await screen.findByText(/Total: the warlock has dealt 2500% damage./i)
+
+        expect(total).toBeInTheDocument()
+    }, 200)
 })
 
 function buyPotion(potionType: PotionType, amount: number) {
