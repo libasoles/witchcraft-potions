@@ -1,79 +1,50 @@
 import { damagePercentByPotionQuantity } from "@/config";
 import type { NumberOfPotions } from "@/types";
 
-type Attack = {
-  attacks: number[]; // rename to damages?
-  total: number;
-};
+type Attacks = NumberOfPotions[];
 
-const noAttack = {
-  attacks: [],
-  total: 0,
-};
+export function calculateDamage(quantifiers: number[]) {
+  const attacks = simulate(quantifiers) as Attacks;
 
-const onePotion = 1;
+  const total = calculateTotalDamage(attacks);
 
-const attackWithOnePotion = {
-  attacks: [onePotion],
-  total: damagePercentByPotionQuantity[onePotion],
-};
+  return {
+    attacks,
+    total,
+  };
+}
 
-export function calculateDamage(quantifiers: number[]): Attack {
+function simulate(quantifiers: number[]): Attacks {
   const availablePotions = onlyAvailablePotions(quantifiers);
+  const availableQuantity = availablePotions.length;
 
-  if (availablePotions.length === 0) return noAttack;
+  if (availableQuantity === 0) return [];
 
-  const [damageUsingAllPotions, remainingPotions] =
-    attackUsingAllPotions(availablePotions);
+  if (availableQuantity === 2) {
+    return sum([1, 1], simulate(reduceAllPotionsInOne(availablePotions)));
+  }
 
-  if (availablePotions.length === 1)
-    return sum(damageUsingAllPotions, calculateDamage(remainingPotions));
+  const attackUsingAllPotions = [availableQuantity] as Attacks;
+  const subsequentsAttacks = simulate(reduceAllPotionsInOne(availablePotions));
 
-  const firstPlusRestCombination = sum(
-    calculateDamage(potionsMinusOneOfThem(availablePotions)),
-    attackWithOnePotion
-  );
-
-  const bestStrategy = max(damageUsingAllPotions, firstPlusRestCombination);
-
-  return sum(bestStrategy, calculateDamage(remainingPotions));
+  return sum(attackUsingAllPotions, subsequentsAttacks);
 }
 
 function onlyAvailablePotions(quantifiers: number[]) {
   return quantifiers.filter((quantity) => quantity > 0);
 }
 
-function attackUsingAllPotions(quantifiers: number[]): [Attack, number[]] {
-  const attacks = [quantifiers.length];
-  const total =
-    damagePercentByPotionQuantity[quantifiers.length as NumberOfPotions];
-
-  const attack = {
-    attacks,
-    total,
-  };
-
-  return [attack, reduceAllPotionsInOne(quantifiers)];
-}
-
-function potionsMinusOneOfThem(quantifiers: number[]) {
-  const oneOfEach = quantifiers.slice().map(() => 1);
-  oneOfEach.pop();
-
-  return oneOfEach;
-}
-
 function reduceAllPotionsInOne(quantifiers: number[]) {
   return quantifiers.map((quantity) => quantity - 1);
 }
 
-function sum(attack1: Attack, attack2: Attack) {
-  return {
-    attacks: attack1.attacks.concat(attack2.attacks),
-    total: attack1.total + attack2.total,
-  };
+function sum(someAttacks: Attacks, otherAttacks: Attacks) {
+  return someAttacks.concat(otherAttacks);
 }
 
-function max(attack1: Attack, attack2: Attack) {
-  return attack1.total > attack2.total ? attack1 : attack2;
+function calculateTotalDamage(attacks: Attacks) {
+  return attacks.reduce((total, attack) => {
+    const damagePerPotionCombination = damagePercentByPotionQuantity[attack];
+    return total + damagePerPotionCombination;
+  }, 0);
 }
