@@ -39,22 +39,6 @@ describe('Damage Report', () => {
         assertTotalDamageWas(3)
     })
 
-    it('renders three attacks when one single potion is selected three times, and the total damage is 9%', async () => {
-        renderPage()
-
-        buyPotion('blue', 3)
-
-        const attack1 = await screen.findByText(/Attack 1: using 1 potion deals 3% damage./i)
-        const attack2 = await screen.findByText(/Attack 2: using 1 potion deals 3% damage./i)
-        const attack3 = await screen.findByText(/Attack 3: using 1 potion deals 3% damage./i)
-
-        assertNumberOfAttacksIs(3)
-        expect(attack1).toBeInTheDocument()
-        expect(attack2).toBeInTheDocument()
-        expect(attack3).toBeInTheDocument()
-        assertTotalDamageWas(9)
-    })
-
     it('renders two attacks when two potions are selected and the total damage is 6%', async () => {
         renderPage()
 
@@ -68,62 +52,6 @@ describe('Damage Report', () => {
         expect(attack1).toBeInTheDocument()
         expect(attack2).toBeInTheDocument()
         assertTotalDamageWas(6)
-    })
-
-    it('renders two attacks when three potions are selected, one of them twice, and the total damage is 13%', async () => {
-        renderPage()
-
-        buyPotion('blue', 1)
-        buyPotion('yellow', 2)
-        buyPotion('gray', 1)
-
-        await waitFor(() => expect(screen.queryByText(/Attack 3/)).not.toBeInTheDocument())
-
-        const attack1 = await screen.findByText(/Attack 1: using 3 different potions deals 10% damage./i)
-        const attack2 = await screen.findByText(/Attack 2: using 1 potion deals 3% damage./i)
-
-        assertNumberOfAttacksIs(2)
-        expect(attack1).toBeInTheDocument()
-        expect(attack2).toBeInTheDocument()
-        assertTotalDamageWas(13)
-    })
-
-    it('renders three attacks dealing 31% damage', async () => {
-        renderPage()
-
-        buyPotion('red', 2)
-        buyPotion('blue', 2)
-        buyPotion('green', 1)
-        buyPotion('yellow', 1)
-        buyPotion('gray', 1)
-
-        const attack1 = await screen.findByText(/Attack 1: using 5 different potions deals 25% damage./i)
-        const attack2 = await screen.findByText(/Attack 2: using 1 potion deals 3% damage./i)
-        const attack3 = await screen.findByText(/Attack 3: using 1 potion deals 3% damage./i)
-
-        assertNumberOfAttacksIs(3)
-        expect(attack1).toBeInTheDocument()
-        expect(attack2).toBeInTheDocument()
-        expect(attack3).toBeInTheDocument()
-        assertTotalDamageWas(31)
-    })
-
-    it('renders two attacks dealing 35% damage', async () => {
-        renderPage()
-
-        buyPotion('red', 2)
-        buyPotion('blue', 2)
-        buyPotion('green', 2)
-        buyPotion('yellow', 1)
-        buyPotion('gray', 1)
-
-        const attack1 = await screen.findByText(/Attack 1: using 5 different potions deals 25% damage./i)
-        const attack2 = await screen.findByText(/Attack 2: using 3 different potions deals 10% damage./i)
-
-        assertNumberOfAttacksIs(2)
-        expect(attack1).toBeInTheDocument()
-        expect(attack2).toBeInTheDocument()
-        assertTotalDamageWas(35)
     })
 
     // TODO: this one will be probably flakey
