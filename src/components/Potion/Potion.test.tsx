@@ -16,8 +16,8 @@ describe('Potion', () => {
     it('renders a potion with the provided name and image', () => {
         renderPotion()
 
-        const name = screen.getByText(/Yellow Potion/i)
-        const image = screen.getByRole('img', { name: /Yellow Potion/i })
+        const name = screen.getByText("Yellow Potion")
+        const image = screen.getByRole('img', { name: "Yellow Potion" })
 
         expect(name).toBeInTheDocument()
         expect(image).toBeInTheDocument() // TODO: actually assert that the image was rendered

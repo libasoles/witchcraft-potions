@@ -23,7 +23,7 @@ describe('Simulator', () => {
     it('renders a page heading', () => {
         renderPage()
 
-        const heading = screen.getByRole('heading', { name: /Simulator/i })
+        const heading = screen.getByRole('heading', { name: "Attack simulator" })
 
         expect(heading).toBeInTheDocument()
     })
@@ -31,7 +31,7 @@ describe('Simulator', () => {
     it('renders five different potions with 0 quantity by default', () => {
         renderPage()
 
-        const quantitySelector = screen.getAllByRole('spinbutton', { name: /Quantity/i })
+        const quantitySelector = screen.getAllByRole('spinbutton', { name: "Quantity" })
 
         expect(quantitySelector).toHaveLength(potionMocks.length)
         quantitySelector.forEach((quantity) => {
@@ -39,8 +39,8 @@ describe('Simulator', () => {
         })
 
         // TODO: assert the actual image was rendered
-        const yellowPotion = screen.getByRole('img', { name: /Yellow Potion/i })
-        const bluePotion = screen.getByRole('img', { name: /Blue Potion/i })
+        const yellowPotion = screen.getByRole('img', { name: "Yellow Potion" })
+        const bluePotion = screen.getByRole('img', { name: "Blue Potion" })
 
         expect(yellowPotion).toBeInTheDocument()
         expect(bluePotion).toBeInTheDocument()
@@ -92,27 +92,24 @@ describe('Simulator', () => {
         it('does not render the damage report by default', () => {
             renderPage()
 
-            const heading = screen.queryByRole('heading', { name: /Resulting Damage/i })
-
-            expect(heading).not.toBeInTheDocument()
+            assertDamageReportIsHidden()
         })
 
         it('calculates the resulting damage when the submit button is pressed', async () => {
             renderPage()
 
-            const heading = screen.queryByRole('heading', { name: /Resulting Damage/i })
-            expect(heading).not.toBeInTheDocument()
+            assertDamageReportIsHidden()
 
             await selectPotionAmount(firstPotion, 1)
 
             pressSimulateButton()
 
-            const resultingDamageHeader = await screen.findByRole('heading', { name: /Resulting Damage/i })
+            const resultingDamageHeader = await screen.findByRole('heading', { name: "Resulting Damage" })
             expect(resultingDamageHeader).toBeInTheDocument()
 
             await assertNumberOfAttacksIs(1)
 
-            const attack1 = screen.getByText(/Attack 1: using 1 potion deals 3% damage./i)
+            const attack1 = screen.getByText("Attack 1: using 1 potion deals 3% damage.")
             expect(attack1).toBeInTheDocument()
             assertTotalDamageIs(3)
         })
@@ -138,7 +135,7 @@ describe('Simulator', () => {
 })
 
 function getSubmitButton() {
-    return screen.getByRole('button', { name: /Simulate/i })
+    return screen.getByRole('button', { name: "Simulate" })
 }
 
 function pressSimulateButton() {
@@ -148,7 +145,7 @@ function pressSimulateButton() {
 }
 
 async function selectPotionAmount(potionIndex: number, amount: number) {
-    const potionQuantifier = screen.getAllByRole('spinbutton', { name: /Quantity/i })[potionIndex]
+    const potionQuantifier = screen.getAllByRole('spinbutton', { name: "Quantity" })[potionIndex]
 
     userEvent.clear(potionQuantifier)
     userEvent.type(potionQuantifier, String(amount))
@@ -168,4 +165,9 @@ async function assertNumberOfAttacksIs(amount: number) {
 async function assertTotalDamageIs(percentage: number) {
     const totalDamage = await screen.findByTestId("total")
     expect(totalDamage).toHaveTextContent(`Total: the warlock has dealt ${percentage}% damage.`)
+}
+
+function assertDamageReportIsHidden() {
+    const heading = screen.queryByRole('heading', { name: "Resulting Damage" })
+    expect(heading).not.toBeInTheDocument()
 }

@@ -12,7 +12,7 @@ describe('Damage Report', () => {
     it('renders a message when there is no possible attacks', () => {
         renderPage()
 
-        const message = screen.getByText(/No possible attacks. Select at least one potion./i)
+        const message = screen.getByText("No possible attacks. Select at least one potion.")
 
         expect(message).toBeInTheDocument()
     })
@@ -22,7 +22,7 @@ describe('Damage Report', () => {
 
         buyPotion('blue', 1)
 
-        const heading = await screen.findByRole('heading', { name: /Resulting Damage/i })
+        const heading = await screen.findByRole('heading', { name: "Resulting Damage" })
 
         expect(heading).toBeInTheDocument()
     })
@@ -32,7 +32,7 @@ describe('Damage Report', () => {
 
         buyPotion('blue', 1)
 
-        const attack1 = await screen.findByText(/Attack 1: using 1 potion deals 3% damage./i)
+        const attack1 = await screen.findByText("Attack 1: using 1 potion deals 3% damage.")
 
         assertNumberOfAttacksIs(1)
         expect(attack1).toBeInTheDocument()
@@ -45,8 +45,8 @@ describe('Damage Report', () => {
         buyPotion('blue', 1)
         buyPotion('yellow', 1)
 
-        const attack1 = await screen.findByText(/Attack 1: using 1 potion deals 3% damage./i)
-        const attack2 = await screen.findByText(/Attack 2: using 1 potion deals 3% damage./i)
+        const attack1 = await screen.findByText("Attack 1: using 1 potion deals 3% damage.")
+        const attack2 = await screen.findByText("Attack 2: using 1 potion deals 3% damage.")
 
         assertNumberOfAttacksIs(2)
         expect(attack1).toBeInTheDocument()
