@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
-import { act, render, renderHook, screen, waitFor } from '@testing-library/react'
-import { usePotionQuantifier } from '@/store';
+import { act, render, renderHook, screen } from '@testing-library/react'
+import { usePotionQuantifier } from '@/store/store.hooks';
 import DamageReport from './index';
 import type { PotionType } from '@/types';
 
@@ -70,10 +70,10 @@ describe('Damage Report', () => {
 
 function buyPotion(potionType: PotionType, amount: number) {
     const { result } = renderHook(() => usePotionQuantifier(potionType))
-    const [, buyBluePotion] = result.current
+    const [, buyPotion] = result.current
 
     act(() => {
-        buyBluePotion(amount);
+        buyPotion(potionType, amount);
     });
 }
 

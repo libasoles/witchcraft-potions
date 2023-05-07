@@ -1,5 +1,5 @@
 import { damagePercentByPotionQuantity } from "@/config"
-import { usePotionQuantifiers } from "@/store"
+import { usePotionQuantifiers } from "@/store/store.hooks"
 import { calculateDamage } from "./calculateDamage"
 import type { NumberOfPotions } from "@/types"
 

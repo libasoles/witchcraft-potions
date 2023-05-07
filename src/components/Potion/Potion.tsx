@@ -1,6 +1,6 @@
 import { SyntheticEvent, ReactNode, useCallback } from 'react'
 import Image from 'next/image'
-import { usePotionQuantifier } from '@/store';
+import { usePotionQuantifier } from '@/store/store.hooks';
 import { minMaxAllowedQuantities } from '@/config';
 import type { Potion as PotionQuantifier } from '@/types';
 
@@ -10,33 +10,23 @@ type Props = {
 
 const [min, max] = minMaxAllowedQuantities
 
-function constrain(value: number) {
-    return Math.min(Math.max(value, min), max);
-}
-
 function PotionQuantifier({ potion }: Props) {
     const [quantity, setQuantity] = usePotionQuantifier(potion.id)
 
-    const updateQuantity = useCallback((quantity: number) => {
-        const limitedValue = constrain(quantity);
-
-        setQuantity(limitedValue)
-    }, [setQuantity])
-
     const handleIncrease = () => {
-        updateQuantity(quantity + 1); // TODO: maybe receive previous value using a lambda
+        setQuantity(potion.id, quantity + 1); // TODO: maybe receive previous value using a lambda
     };
 
     const handleDecrease = () => {
-        updateQuantity(quantity - 1);
+        setQuantity(potion.id, quantity - 1);
     };
 
     const onChange = useCallback((event: SyntheticEvent) => {
         const target = event.target as HTMLInputElement
         const value = parseInt(target.value) || 0
 
-        updateQuantity(value)
-    }, [updateQuantity])
+        setQuantity(potion.id, value)
+    }, [potion.id, setQuantity])
 
     return (
         <div className='flex flex-col w-32 p-4 box-content items-center gap-2'>

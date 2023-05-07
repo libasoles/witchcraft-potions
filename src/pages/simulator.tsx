@@ -2,7 +2,7 @@ import { useState } from 'react'
 import PotionQuantifier from '@/components/Potion'
 import { potions as PotionList } from '@/config'
 import DamageReport from '@/components/DamageReport'
-import { usePotionQuantifiers } from '@/store'
+import { usePotionQuantifiers } from '@/store/store.hooks'
 import type { Potions } from '@/types'
 
 type Props = {
