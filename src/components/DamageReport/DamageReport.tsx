@@ -5,7 +5,7 @@ import type { NumberOfPotions } from "@/types"
 
 export default function DamageReport() {
     const { quantifiers } = usePotionQuantifiers()
-    const potions = Object.values(quantifiers) as NumberOfPotions[]
+    const potions = Object.values(quantifiers)
 
     const { attacks, total } = calculateDamage(potions)
 
@@ -15,8 +15,8 @@ export default function DamageReport() {
         <div className='bg-gray-800  w-full p-4 m-8 animate-fade-in-out'>
             <h2 className="text-2xl font-bold mb-4">Resulting Damage</h2>
             <ul className="text-gray-400 list-disc list-inside mb-4 max-h-[20em] overflow-y-scroll" data-testid='best-attacks'>
-                {attacks.map((numberOfPotions: number, index: number) => {
-                    const description = explainAttack(numberOfPotions as NumberOfPotions)
+                {attacks.map((numberOfPotions: NumberOfPotions, index: number) => {
+                    const description = explainAttack(numberOfPotions)
 
                     return <li key={index} className="mb-2">Attack {index + 1}: {description}</li>
                 })}

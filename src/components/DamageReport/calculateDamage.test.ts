@@ -1,4 +1,3 @@
-import { NumberOfPotions } from "@/types";
 import { calculateDamage } from "./calculateDamage";
 
 describe("simulate attacks", () => {
