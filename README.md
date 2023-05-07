@@ -73,7 +73,8 @@ export function calculateDamage(potions: NumberOfPotions[]) {
 }
 ```
 
-Recursively calculate attacks for a given list of potions. E.g.: for availablePotions being `[1, 2, 2, 1, 1]`, it will calculate the best attack for `[1, 1, 1, 1, 1]` and then the best for the remaining `[1, 1]`
+Recursively calculate attacks for a given list of potions. 
+E.g.: for `availablePotions` being `[1, 2, 2, 1, 1]`, it will calculate the best attack for `[1, 1, 1, 1, 1]` and then the best for the remaining `[1, 1]`
 
 ```javascript
 function simulateAttacksWith(availablePotions): Strategy[] {
@@ -95,13 +96,13 @@ I'm using recursion to consume the potions. But the base cases are encapsulated 
 
 The base cases are:
 
-- when there's no potions left, the algorithm returns an empty array (an empty list of attacks)
-- when there's only one potion left. In that case, the algorithm returns a list with a single potion attack.
+- when there's *no potions left*, the algorithm returns an empty array (an empty list of attacks)
+- when there's *only one potion left*. In that case, the algorithm returns a list with a single potion attack.
 
 Then the algorithm evaluates two possible approaches:
 
-- attack using all available potions
-- attack separating the potions in groups (recursively). E.g.: `(1 + 4)`, `(1 + 1 + 3)`, etc, and then `(2 + 3)`, `(2 + 1 + 2)`, etc.
+- attack using _all available potions_
+- attack _separating the potions in groups_ (recursively).
 
 ```javascript
 function bestAttackWith(potions): Strategy {
@@ -118,11 +119,13 @@ function bestAttackWith(potions): Strategy {
 }
 ```
 
-The combinations are calculated inside `tryPossibleAttackCombinations` function. It will call `bestAttackWith`, so it can recursively decompose the potions in groups. Like `(1 + 4)`, `(1 + 1 + 3)`, `(1 + 1 + 1 + 2)`, `(1 + 1 + 1 + 1 + 1)`, and then the same with `(2 + 3)`, `(2 + 1 + 2)`, `(2 + 1 + 1 + 1)`, etc. It increases the left side of the group and decompose the right side recursively.
+The combinations are calculated inside `tryPossibleAttackCombinations` function. It will call `bestAttackWith` function, so it can recursively decompose the potions in groups.
+
+It increases the left side of the group and decompose the right side recursively. Like `(1 + 4)`, `(1 + 1 + 3)`, `(1 + 1 + 1 + 2)`, `(1 + 1 + 1 + 1 + 1)`. And then the same with `(2 + 3)`, `(2 + 1 + 2)`, `(2 + 1 + 1 + 1)`, etc.
 
 ```javascript
-function tryPossibleAttackCombinations(numberOfPotions: number) {
-  const numberedPotions = range(1, numberOfPotions); // this range will list 1+combinations, 2+combinations, etc and return all strategies
+function tryPossibleAttackCombinations(numberOfPotions) {
+  const numberedPotions = range(1, numberOfPotions);
 
   return numberedPotions.map((somePotions) => {
     const attackWithSomePotions = attackWith(somePotions);
@@ -140,11 +143,11 @@ function tryPossibleAttackCombinations(numberOfPotions: number) {
 }
 ```
 
-That function just returns all possible attack combinations. Then the previous function will pick the best one.
+That function just returns all possible attack combinations. Then the previous function will only pick the best one (the strategy causing more damage).
 
-Finally, `calculateDamage` function only returns a list of numbers, not messages. Because presentation is not the algorithm's concern. Presentation is a concern of the `DamageReport` component.
+Note that `calculateDamage` function only returns a list of numbers, not messages. Because presentation is not the algorithm's concern. Presentation is a concern of the `DamageReport` component.
 
-The performance of the algorithm is good. I found no need of optimizing it with techniques like _memoization_.
+Finally, I have to say that the performance of the algorithm is good. I found no need of optimizing it with techniques like _memoization_.
 
 ## About the code
 
