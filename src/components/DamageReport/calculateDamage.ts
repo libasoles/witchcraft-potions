@@ -3,82 +3,95 @@ import type { NumberOfPotions } from "@/types";
 
 type Strategy = NumberOfPotions[];
 
-export function calculateDamage(quantifiers: number[]) {
-  let availablePotions = quantifiers;
-  let total = 0;
-
-  const attacks: Strategy[] = [];
-
-  while (availablePotions.some(isNotEmpty)) {
-    const attack = simulate(availablePotions) as Strategy;
-    attacks.push(attack);
-
-    total += calculateTotalDamage(attack);
-
-    availablePotions = reduceAllPotionsInOne(availablePotions);
-  }
+export function calculateDamage(potions: NumberOfPotions[]) {
+  const attacks = merge(simulateAttacksWith(potions));
+  const total = calculateTotalDamage(attacks);
 
   return {
-    attacks: attacks.flatMap((attack) => attack),
+    attacks,
     total,
   };
 }
 
+function simulateAttacksWith(availablePotions: NumberOfPotions[]): Strategy[] {
+  const attack = bestAttackWith(availablePotions) as Strategy;
+
+  const remainingPotions = reduceAllPotionsInOne(
+    availablePotions
+  ) as NumberOfPotions[];
+
+  if (remainingPotions.some(isNotEmpty)) {
+    const subsequentAttacks = simulateAttacksWith(remainingPotions);
+
+    return [attack, ...subsequentAttacks];
+  }
+
+  return [attack];
+}
+
 const isNotEmpty = (quantity: number) => quantity > 0;
 
-function simulate(quantifiers: number[]): Strategy {
-  const availablePotions = onlyAvailablePotions(quantifiers);
+const noAttack = [] as Strategy;
+const singlePotionAttack = [1] as Strategy;
+const attackWith = (potions: number) => [potions] as Strategy;
+
+function bestAttackWith(potions: NumberOfPotions[]): Strategy {
+  const availablePotions = onlyAvailable(potions);
   const availableQuantity = availablePotions.length;
 
-  if (availableQuantity === 0) return [];
-  if (availableQuantity === 1) return [1];
+  if (availableQuantity === 0) return noAttack;
+  if (availableQuantity === 1) return singlePotionAttack;
 
-  const attackUsingAllPotions = [availableQuantity] as Strategy;
+  const attackUsingAllPotions = attackWith(availableQuantity);
+  const otherPossibleAttacks = tryPossibleAttackCombinations(availableQuantity);
 
-  const possibleAttacks = tryPossibleAttacks(availableQuantity);
-
-  return [attackUsingAllPotions, ...possibleAttacks].reduce(bestAttack);
+  return [attackUsingAllPotions, ...otherPossibleAttacks].reduce(bestAttack);
 }
 
-function onlyAvailablePotions(quantifiers: number[]) {
-  return quantifiers.filter((quantity) => quantity > 0);
+function onlyAvailable(potions: number[]) {
+  return potions.filter((quantity) => quantity > 0);
 }
 
-function reduceAllPotionsInOne(quantifiers: number[]) {
-  return quantifiers.map((quantity) => quantity - 1);
+function reduceAllPotionsInOne(potions: number[]) {
+  return potions.map((quantity) => quantity - 1);
 }
 
 function combine(someAttacks: Strategy, otherAttacks: Strategy) {
   return someAttacks.concat(otherAttacks);
 }
 
-function range(start: number, stop: number) {
-  const length = stop - start;
-  const fill = (x: number, i: number) => start + i;
-  return Array.from({ length }, fill);
-}
-
 function calculateTotalDamage(attacks: Strategy) {
-  return attacks.reduce((total, attack) => {
-    const damagePerPotionCombination = damagePercentByPotionQuantity[attack];
-    return total + damagePerPotionCombination;
-  }, 0);
+  const initialDamage = 0;
+
+  return attacks.reduce(
+    (total, quantity) => total + damagePercentByPotionQuantity[quantity],
+    initialDamage
+  );
 }
 
-function tryPossibleAttacks(numberOfPotions: number) {
-  return range(1, numberOfPotions).map((somePotions) => {
+function tryPossibleAttackCombinations(numberOfPotions: number) {
+  const numberedPotions = range(1, numberOfPotions);
+
+  return numberedPotions.map((somePotions) => {
+    const attackWithSomePotions = attackWith(somePotions);
+
     const restOfPotions = setOfPotions(numberOfPotions - somePotions);
+    const bestAttackWithRestOfPotions = bestAttackWith(restOfPotions);
 
-    const attackwithSomePotions = [somePotions as NumberOfPotions];
-    const bestAttackWithRestOfPotions = simulate(restOfPotions);
-
-    const possibleAttack = combine(
-      attackwithSomePotions,
+    const possibleStrategy = combine(
+      attackWithSomePotions,
       bestAttackWithRestOfPotions
     );
 
-    return possibleAttack;
+    return possibleStrategy;
   });
+}
+
+function range(start: number, stop: number) {
+  const length = stop - start;
+  const fill = (_: number, index: number) => start + index;
+
+  return Array.from({ length }, fill);
 }
 
 function bestAttack(
@@ -93,4 +106,8 @@ function bestAttack(
 
 function setOfPotions(amount: number) {
   return Array(amount).fill(1);
+}
+
+function merge(attacks: Strategy[]) {
+  return attacks.flatMap((attack) => attack);
 }

@@ -1,8 +1,9 @@
+import { NumberOfPotions } from "@/types";
 import { calculateDamage } from "./calculateDamage";
 
 describe("simulate attacks", () => {
   it("should return no attack when no potions are available", () => {
-    const potions: number[] = [];
+    const potions: NumberOfPotions[] = [];
 
     const { attacks, total } = calculateDamage(potions);
 
@@ -11,7 +12,7 @@ describe("simulate attacks", () => {
   });
 
   it("should return one attack when one potion is available, and damage is 3%", () => {
-    const potions = [1];
+    const potions: NumberOfPotions[] = [1];
 
     const { attacks, total } = calculateDamage(potions);
 
@@ -20,7 +21,7 @@ describe("simulate attacks", () => {
   });
 
   it("should return two attacks when two potions are available, and damage is 6%", () => {
-    const potions = [1, 1];
+    const potions: NumberOfPotions[] = [1, 1];
 
     const { attacks, total } = calculateDamage(potions);
 
@@ -29,7 +30,7 @@ describe("simulate attacks", () => {
   });
 
   it("should return only one attack when three potions are available, and damage is 10%", () => {
-    const potions = [1, 1, 1];
+    const potions: NumberOfPotions[] = [1, 1, 1];
 
     const { attacks, total } = calculateDamage(potions);
 
@@ -38,7 +39,7 @@ describe("simulate attacks", () => {
   });
 
   it("should return only one attack when four potions are available, and damage is 20%", () => {
-    const potions = [1, 1, 1, 1];
+    const potions: NumberOfPotions[] = [1, 1, 1, 1];
 
     const { attacks, total } = calculateDamage(potions);
 
@@ -47,7 +48,7 @@ describe("simulate attacks", () => {
   });
 
   it("should return only one attack when five potions are available, and damage is 25%", () => {
-    const potions = [1, 1, 1, 1, 1];
+    const potions: NumberOfPotions[] = [1, 1, 1, 1, 1];
 
     const { attacks, total } = calculateDamage(potions);
 
@@ -56,7 +57,7 @@ describe("simulate attacks", () => {
   });
 
   it("returns two attacks when using the same potion twice, and damage is 6%", () => {
-    const potions = [2];
+    const potions: NumberOfPotions[] = [2];
 
     const { attacks, total } = calculateDamage(potions);
 
@@ -65,7 +66,7 @@ describe("simulate attacks", () => {
   });
 
   it("returns three attacks when using the same potion twice, and one more, and damage is 9%", () => {
-    const potions = [2, 1];
+    const potions: NumberOfPotions[] = [2, 1];
 
     const { attacks, total } = calculateDamage(potions);
 
@@ -75,7 +76,7 @@ describe("simulate attacks", () => {
   });
 
   it("returns two attacks when using the same potion twice, and two more, and damage is 13%", () => {
-    const potions = [2, 1, 1];
+    const potions: NumberOfPotions[] = [2, 1, 1];
 
     const { attacks, total } = calculateDamage(potions);
 
@@ -85,7 +86,7 @@ describe("simulate attacks", () => {
   });
 
   it("returns three attacks when using two potions twice, plus one of each of the rest, and damage is 31%", () => {
-    const potions = [2, 2, 1, 1, 1];
+    const potions: NumberOfPotions[] = [2, 2, 1, 1, 1];
 
     const { attacks, total } = calculateDamage(potions);
 
@@ -95,7 +96,7 @@ describe("simulate attacks", () => {
   });
 
   it("returns two attacks when using three potions twice, plus one of each of the rest, and damage is 35%", () => {
-    const potions = [2, 2, 2, 1, 1];
+    const potions: NumberOfPotions[] = [2, 2, 2, 1, 1];
 
     const { attacks, total } = calculateDamage(potions);
 

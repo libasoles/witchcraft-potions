@@ -5,8 +5,9 @@ import type { NumberOfPotions } from "@/types"
 
 export default function DamageReport() {
     const { quantifiers } = usePotionQuantifiers()
+    const potions = Object.values(quantifiers) as NumberOfPotions[]
 
-    const { attacks, total } = calculateDamage(Object.values(quantifiers))
+    const { attacks, total } = calculateDamage(potions)
 
     if (attacks.length === 0) return <div>No possible attacks. Select at least one potion.</div>
 

@@ -16,6 +16,10 @@ describe('Simulator', () => {
         render(<Simulator potions={potionMocks} />)
     }
 
+    test('renders Simulator without crashing when potions is not provided', () => {
+        render(<Simulator />)
+    })
+
     it('renders a page heading', () => {
         renderPage()
 

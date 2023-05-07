@@ -6,7 +6,7 @@ import { usePotionQuantifiers } from '@/store'
 import type { Potions } from '@/types'
 
 type Props = {
-  potions: Potions
+  potions?: Potions
 }
 
 export default function Simulator({ potions = PotionList }: Props) {
