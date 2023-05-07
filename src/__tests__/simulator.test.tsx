@@ -1,6 +1,6 @@
 import '@testing-library/jest-dom'
 import { render, screen, waitFor } from '@testing-library/react'
-import Simulator from './index'
+import Simulator from '../pages/index'
 import userEvent from '@testing-library/user-event'
 import type { Potions } from '@/types';
 
