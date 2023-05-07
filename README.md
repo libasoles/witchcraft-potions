@@ -153,7 +153,7 @@ Finally, I have to say that the performance of the algorithm is good. I found no
 
 ## About the code
 
-I'm using `Next.js` because it's one of the main framework that React documentation recommends. But I'm not actually using many of the features that Next.js provides because this is an small project. I could have used Vite as well.
+I'm using `Next.js` because it's one of the main framework that React documentation recommends. But I'm not actually using many of the features that Next.js provides because this is a small project. I could have used Vite as well.
 
 Entry point is pages folder. There's only one page there, the `Simulator`.
 

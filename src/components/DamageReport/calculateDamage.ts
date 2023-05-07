@@ -3,7 +3,7 @@ import type { NumberOfPotions } from "@/types";
 
 type Strategy = NumberOfPotions[];
 
-export function calculateDamage(potions: NumberOfPotions[]) {
+export function calculateDamage(potions: number[]) {
   const attacks = merge(simulateAttacksWith(potions));
   const total = calculateTotalDamage(attacks);
 
@@ -13,12 +13,10 @@ export function calculateDamage(potions: NumberOfPotions[]) {
   };
 }
 
-function simulateAttacksWith(availablePotions: NumberOfPotions[]): Strategy[] {
+function simulateAttacksWith(availablePotions: number[]): Strategy[] {
   const attack = bestAttackWith(availablePotions) as Strategy;
 
-  const remainingPotions = reduceAllPotionsInOne(
-    availablePotions
-  ) as NumberOfPotions[];
+  const remainingPotions = reduceAllPotionsInOne(availablePotions);
 
   if (remainingPotions.some(isNotEmpty)) {
     const subsequentAttacks = simulateAttacksWith(remainingPotions);
@@ -35,7 +33,7 @@ const noAttack = [] as Strategy;
 const singlePotionAttack = [1] as Strategy;
 const attackWith = (potions: number) => [potions] as Strategy;
 
-function bestAttackWith(potions: NumberOfPotions[]): Strategy {
+function bestAttackWith(potions: number[]): Strategy {
   const availablePotions = onlyAvailable(potions);
   const availableQuantity = availablePotions.length;
 
