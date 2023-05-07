@@ -1,4 +1,4 @@
-# Witchcraft simulator
+# Witchcraft Simulator
 
 by: Guillermo Perez
 
@@ -13,7 +13,7 @@ The challenge is to carry out an algorithm that helps the witch to calculate the
 
 ![Screenshot](https://github.com/libasoles/witchcraft-potions/blob/main/public/screenshot.png)
 
-## Techonologies
+## Technologies
 
 - React (compiled with Next.js)
 - Typescript
@@ -43,25 +43,108 @@ Run the tests:
 npm run test
 ```
 
+Coverage report:
+
+![Screenshot](https://github.com/libasoles/witchcraft-potions/blob/main/public/coverage.png)
+
 ## Algorithm explained
 
 Though it should explain itself, I'll comment the algorithm in a few words.
 
-I'm using recursion to consume the potions. The base cases are:
+But first, keep in mind that this algorithm is a generalized one, and so it's quite more complex than other algorithms that "just do the job". Consider this simpler one (from a previous commit):
 
-- When there's no potions left, the algorithm returns an empty array (an empty list of attacks)
-- When there's only one potion left. In that case, the algorithm returns a list with a single potion attack.
+https://github.com/libasoles/witchcraft-potions/blob/9a0a867f17f1a01e48e031bb491b658b5eb113a7/src/components/DamageReport/calculateDamage.ts
 
-The algorithm evaluates two possible approaches:
+It works for the current rules of the game, and that should be ok to deliver (in an agile mindset). But it's not generalized. It's not prepared to deal with changes in the rules. And I thought that I could show off a more generalized algorithm. And that requires more abstraction, and then more semantic efforts.
+
+This more abstract algorithm is separated in these parts, from top down:
+
+*Get a list of attack*s, and *calculate the total damage*.
+
+```javascript
+export function calculateDamage(potions: NumberOfPotions[]) {
+  const attacks = simulateAttacksWith(potions);
+  const total = calculateTotalDamage(attacks);
+
+  return {
+    attacks,
+    total,
+  };
+}
+```
+
+Recursively calculate attacks for a given list of potions. E.g.: for availablePotions being `[1, 2, 2, 1, 1]`, it will calculate the best attack for `[1, 1, 1, 1, 1]` and then the best for the remaining `[1, 1]`
+
+```javascript
+function simulateAttacksWith(availablePotions): Strategy[] {
+  const attack = bestAttackWith(availablePotions);
+
+  const remainingPotions = reduceAllPotionsInOne(availablePotions);
+
+  if (remainingPotions.some(isNotEmpty)) {
+    const subsequentAttacks = simulateAttacksWith(remainingPotions);
+
+    return [attack, ...subsequentAttacks];
+  }
+
+  return [attack];
+}
+```
+
+I'm using recursion to consume the potions. But the base cases are encapsulated in `bestAttackWith` function.
+
+The base cases are:
+
+- when there's no potions left, the algorithm returns an empty array (an empty list of attacks)
+- when there's only one potion left. In that case, the algorithm returns a list with a single potion attack.
+
+Then the algorithm evaluates two possible approaches:
 
 - attack using all available potions
-- attack separating the potions in groups (recursively)
+- attack separating the potions in groups (recursively). E.g.: `(1 + 4)`, `(1 + 1 + 3)`, etc, and then `(2 + 3)`, `(2 + 1 + 2)`, etc.
 
-It only returns the best of those two approaches. And it returns numbers, not messages. Because presentation is not the algorithm's concern.
+```javascript
+function bestAttackWith(potions): Strategy {
+  const availablePotions = onlyAvailable(potions);
+  const availableQuantity = availablePotions.length;
 
-As the algorithm use recursive, the list of attacks piles up. The total is calculated in place, during iterations. Maybe it could have been calculated afterwards, but it was useful to compare the two approaches.
+  if (availableQuantity === 0) return noAttack;
+  if (availableQuantity === 1) return singlePotionAttack;
 
-Finally, I'm not testing the algorithm itself directly. Instead I'm testing the component that consumes it and renders the results, so I can test the whole thing with messages being rendered on screen (the presentational aspect).
+  const attackUsingAllPotions = attackWith(availableQuantity);
+  const otherPossibleAttacks = tryPossibleAttackCombinations(availableQuantity);
+
+  return [attackUsingAllPotions, ...otherPossibleAttacks].reduce(bestAttack);
+}
+```
+
+The combinations are calculated inside `tryPossibleAttackCombinations` function. It will call `bestAttackWith`, so it can recursively decompose the potions in groups. Like `(1 + 4)`, `(1 + 1 + 3)`, `(1 + 1 + 1 + 2)`, `(1 + 1 + 1 + 1 + 1)`, and then the same with `(2 + 3)`, `(2 + 1 + 2)`, `(2 + 1 + 1 + 1)`, etc. It increases the left side of the group and decompose the right side recursively.
+
+```javascript
+function tryPossibleAttackCombinations(numberOfPotions: number) {
+  const numberedPotions = range(1, numberOfPotions); // this range will list 1+combinations, 2+combinations, etc and return all strategies
+
+  return numberedPotions.map((somePotions) => {
+    const attackWithSomePotions = attackWith(somePotions);
+
+    const restOfPotions = setOfPotions(numberOfPotions - somePotions);
+    const bestAttackWithRestOfPotions = bestAttackWith(restOfPotions);
+
+    const possibleStrategy = combine(
+      attackWithSomePotions,
+      bestAttackWithRestOfPotions
+    );
+
+    return possibleStrategy;
+  });
+}
+```
+
+That function just returns all possible attack combinations. Then the previous function will pick the best one.
+
+Finally, `calculateDamage` function only returns a list of numbers, not messages. Because presentation is not the algorithm's concern. Presentation is a concern of the `DamageReport` component.
+
+The performance of the algorithm is good. I found no need of optimizing it with techniques like _memoization_.
 
 ## About the code
 
@@ -69,9 +152,9 @@ I'm using `Next.js` because it's one of the main framework that React documentat
 
 Entry point is pages folder. There's only one page there, the `Simulator`.
 
-It receives a list of potions, so tests can inject whatever they want. However, typescript constrains the type of potions allowed. They have to be one of 'red','blue', etc.
+It receives a list of potions, so tests can inject whatever they want. However, typescript constrains the type of potions allowed. They have to be one of 'red', 'blue', etc.
 
-There's a `types.ts` file where you can see the above. It might call your attention that also the number of potions is constrained to be between 1 and 5. That's helpful for the algorithm as it works with a limited number of potions and typescript has to acknowledge that as well.
+There's a `types.ts` file where you can see the above. It might call your attention that also the number of potions is constrained to be between 1 and 5. That's helpful for the algorithm as it works with a limited number of potions (5) and typescript has to acknowledge that as well.
 
 The store is written with `Zustand`and deserves a few comments. First, I'm using `Immer` so I can pretend I'm mutating state while under the hood Immer is maintaining inmutability. If you are not familiar with Zustand, the reducers might look a bit busy but that could be improved as soon as state grows and store separates in slices.
 
