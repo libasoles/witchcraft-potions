@@ -11,9 +11,10 @@ The challenge is to carry out an algorithm that helps the witch to calculate the
 - You can only combine potions of different colors.
 - The result must be the combinations that cause the most damage.
 
-![Screenshot](https://github.com/libasoles/witchcraft-potions/blob/main/public/screenshot.png)
+<!-- image with link markdown -->
+[![Demo](https://github.com/libasoles/witchcraft-potions/blob/main/public/screenshot.png)](https://voluble-florentine-6c6068.netlify.app/)
 
-Live demo: https://voluble-florentine-6c6068.netlify.app/
+Live demo: [https://voluble-florentine.netlify.app/](https://voluble-florentine-6c6068.netlify.app/)
 
 ## Technologies
 
