@@ -13,6 +13,8 @@ The challenge is to carry out an algorithm that helps the witch to calculate the
 
 ![Screenshot](https://github.com/libasoles/witchcraft-potions/blob/main/public/screenshot.png)
 
+Live demo: https://voluble-florentine-6c6068.netlify.app/
+
 ## Technologies
 
 - React (compiled with Next.js)
