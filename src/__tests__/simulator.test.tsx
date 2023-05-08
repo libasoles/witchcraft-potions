@@ -16,7 +16,7 @@ describe('Simulator', () => {
         render(<Simulator potions={potionMocks} />)
     }
 
-    test('renders Simulator without crashing when potions is not provided', () => {
+    it('renders Simulator without crashing when potions are not provided', () => {
         render(<Simulator />)
     })
 
@@ -73,12 +73,12 @@ describe('Simulator', () => {
             expect(submitButton).toBeEnabled()
         })
 
-        it('dissapears after the submit button is pressed and damage report is displayed', async () => {
+        it('dissapears after is pressed and damage report is displayed', async () => {
             renderPage()
 
             await selectPotionAmount(firstPotion, 1)
 
-            pressSimulateButton()
+            pressSubmitButton()
 
             const submitButton = getSubmitButton()
 
@@ -102,7 +102,7 @@ describe('Simulator', () => {
 
             await selectPotionAmount(firstPotion, 1)
 
-            pressSimulateButton()
+            pressSubmitButton()
 
             const resultingDamageHeader = await screen.findByRole('heading', { name: "Resulting Damage" })
             expect(resultingDamageHeader).toBeInTheDocument()
@@ -119,7 +119,7 @@ describe('Simulator', () => {
 
             await selectPotionAmount(firstPotion, 1)
 
-            pressSimulateButton()
+            pressSubmitButton()
 
             await assertNumberOfAttacksIs(1)
 
@@ -138,7 +138,7 @@ function getSubmitButton() {
     return screen.getByRole('button', { name: "Simulate" })
 }
 
-function pressSimulateButton() {
+function pressSubmitButton() {
     const submitButton = getSubmitButton()
 
     userEvent.click(submitButton)

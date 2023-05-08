@@ -64,7 +64,7 @@ This more abstract algorithm is separated in these parts, from top down:
 *Get a list of attack*s, and *calculate the total damage*.
 
 ```javascript
-export function calculateDamage(potions: NumberOfPotions[]) {
+export function calculateDamage(potions: number[]) {
   const attacks = simulateAttacksWith(potions);
   const total = calculateTotalDamage(attacks);
 

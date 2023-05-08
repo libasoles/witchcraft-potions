@@ -54,7 +54,7 @@ describe('Damage Report', () => {
         assertTotalDamageWas(6)
     })
 
-    // TODO: this one will be probably flakey
+    // TODO: this one will be probably flaky
     it('renders the more expensive calculation in less than 200ms', async () => {
         renderPage()
 
